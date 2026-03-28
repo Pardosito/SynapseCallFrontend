@@ -1,0 +1,25 @@
+.base-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+
+  .base-label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #333333;
+  }
+
+  .base-input {
+    padding: 0.6rem;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s ease;
+
+    &:focus {
+      border-color: #0056b3;
+    }
+  }
+}
