@@ -1,0 +1,27 @@
+.public-header {
+    width: 100%;
+    background: #56667A;
+    top: 0;
+    z-index: 20;
+}
+
+.header-content {
+    min-height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.logo {
+    font-size: 1 rem;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.nav-menu {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    color: #000500;
+}
