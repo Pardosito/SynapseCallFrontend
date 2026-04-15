@@ -1,12 +1,21 @@
-<p>hero-section works!</p>
-<section class="hero-section">
-    <div class="container hero-content">
-        <div class="hero-text">
-            <h1>Synapse Call</h1>
-            <p>
-            La plataforma de videollamadas más robusta y accesible.
-            Organiza reuniones profesionales, gestiona tu agenda y colabora con tu equipo.
-            </p>
-        </div>
-    </div>
+<section class="hero" aria-label="Resumen de producto">
+	<div class="hero__content">
+		<p class="hero__eyebrow">Comunicacion empresarial en tiempo real</p>
+		<h1>Lleva tus reuniones remotas a un flujo simple y profesional</h1>
+		<p class="hero__description">
+			SynapseCall unifica videollamada, chat y comparticion de archivos para que tu equipo avance sin
+			cambiar de herramienta.
+		</p>
+
+		<div class="hero__actions">
+			<a class="hero__button hero__button--primary" routerLink="/register">Comenzar gratis</a>
+			<a class="hero__button hero__button--ghost" routerLink="/login">Ya tengo cuenta</a>
+		</div>
+
+		<ul class="hero__benefits" aria-label="Beneficios principales">
+			@for (benefit of benefits; track benefit) {
+				<li>{{ benefit }}</li>
+			}
+		</ul>
+	</div>
 </section>

@@ -1,1 +1,53 @@
-<p>register-form works!</p>
+<form class="register-form" (ngSubmit)="submit()">
+	<label>
+		<span>Nombre completo</span>
+		<input
+			type="text"
+			name="name"
+			required
+			[disabled]="disabled()"
+			[ngModel]="name()"
+			(ngModelChange)="name.set($event)"
+		/>
+	</label>
+
+	<label>
+		<span>Correo</span>
+		<input
+			type="email"
+			name="email"
+			required
+			[disabled]="disabled()"
+			[ngModel]="email()"
+			(ngModelChange)="email.set($event)"
+		/>
+	</label>
+
+	<div class="register-form__row">
+		<label>
+			<span>Contrasena</span>
+			<input
+				type="password"
+				name="password"
+				required
+				[disabled]="disabled()"
+				[ngModel]="password()"
+				(ngModelChange)="password.set($event)"
+			/>
+		</label>
+
+		<label>
+			<span>Confirmar contrasena</span>
+			<input
+				type="password"
+				name="confirmPassword"
+				required
+				[disabled]="disabled()"
+				[ngModel]="confirmPassword()"
+				(ngModelChange)="confirmPassword.set($event)"
+			/>
+		</label>
+	</div>
+
+	<button type="submit" [disabled]="disabled()">Crear cuenta</button>
+</form>

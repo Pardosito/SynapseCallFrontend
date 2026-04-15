@@ -1,1 +1,27 @@
-<p>login-form works!</p>
+<form class="login-form" (ngSubmit)="submit()">
+	<label>
+		<span>Correo</span>
+		<input
+			type="email"
+			name="email"
+			required
+			[disabled]="disabled()"
+			[ngModel]="email()"
+			(ngModelChange)="email.set($event)"
+		/>
+	</label>
+
+	<label>
+		<span>Contrasena</span>
+		<input
+			type="password"
+			name="password"
+			required
+			[disabled]="disabled()"
+			[ngModel]="password()"
+			(ngModelChange)="password.set($event)"
+		/>
+	</label>
+
+	<button type="submit" [disabled]="disabled()">Entrar</button>
+</form>

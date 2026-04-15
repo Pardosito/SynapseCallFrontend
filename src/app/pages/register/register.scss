@@ -1,0 +1,40 @@
+.register-page {
+	background: linear-gradient(180deg, #f8fafc 0%, #eff6ff 100%);
+	padding: 1.5rem;
+}
+
+.register-shell {
+	background-color: #ffffff;
+	border: 1px solid #dbeafe;
+	border-radius: 1rem;
+	margin: 0 auto;
+	max-width: 640px;
+	padding: 1.2rem;
+	display: grid;
+	gap: 1rem;
+}
+
+.register-shell h1 {
+	font-size: 1.45rem;
+	margin: 0;
+}
+
+.register-shell p {
+	margin: 0;
+}
+
+.register-shell__feedback {
+	border-radius: 0.75rem;
+	font-size: 0.9rem;
+	padding: 0.7rem 0.8rem;
+}
+
+.register-shell__feedback--error {
+	background-color: #fee2e2;
+	color: #7f1d1d;
+}
+
+.register-shell__feedback--ok {
+	background-color: #dcfce7;
+	color: #14532d;
+}

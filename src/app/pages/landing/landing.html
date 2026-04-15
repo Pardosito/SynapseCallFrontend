@@ -1,5 +1,49 @@
 <app-public-header />
-<app-hero-section />
-<app-features-overview />
-<app-pricing-tiers />
+
+<main class="landing-page" aria-label="Pagina principal SynapseCall">
+	<app-hero-section />
+
+	<section class="landing-page__session" aria-label="Estado de sesion compartida">
+		<header>
+			<h2>Estado de sesion</h2>
+			<p>Flujo de consulta: memoria del servicio, sessionStorage y API.</p>
+		</header>
+
+		@if (authFlow.currentUser(); as user) {
+			<div class="landing-page__session-card">
+				<p><strong>Usuario:</strong> {{ user.name }}</p>
+				<p><strong>Email:</strong> {{ user.email }}</p>
+			</div>
+		} @else {
+			<p class="landing-page__session-empty">No hay usuario cargado en este momento.</p>
+		}
+
+		<div class="landing-page__session-actions">
+			<button type="button" [disabled]="isLoadingProfile()" (click)="loadProfile(false)">Cargar perfil</button>
+			<button type="button" [disabled]="isLoadingProfile()" (click)="loadProfile(true)">Forzar API</button>
+		</div>
+
+		@if (feedback()) {
+			<p class="landing-page__feedback">{{ feedback() }}</p>
+		}
+	</section>
+
+	<app-features-overview />
+
+	<section class="landing-page__trust" aria-label="Indicadores de confianza">
+		<article>
+			<h2>99.95%</h2>
+			<p>Disponibilidad de plataforma mensual.</p>
+		</article>
+		<article>
+			<h2>+1200</h2>
+			<p>Equipos remotos activos en SynapseCall.</p>
+		</article>
+		<article>
+			<h2>24/7</h2>
+			<p>Soporte para cuentas empresariales.</p>
+		</article>
+	</section>
+</main>
+
 <app-public-footer />

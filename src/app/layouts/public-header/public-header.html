@@ -1,11 +1,17 @@
-<p>public-header works!</p>
-<header class="public-header">
-    <div class="container header-content">
-        <a class="logo" href="#">Synapse Call</a>
-        <nav class="nav-menu">
-            <a href="/">Inicio</a>
-            <a href="/login">Iniciar sesión</a>
-            <a href="/register" class="btn-outline">Registrarse</a>
-        </nav>
-    </div>
+<header class="public-header" role="banner">
+	<div class="brand">
+		<span class="brand__name">SynapseCall</span>
+		<span class="brand__tagline">Videollamadas seguras para equipos distribuidos</span>
+	</div>
+
+	<nav class="public-nav" aria-label="Navegacion principal">
+		<a class="public-nav__link" routerLink="/">Inicio</a>
+		@if (!authFlow.isAuthenticated()) {
+			<a class="public-nav__link" routerLink="/login">Iniciar sesion</a>
+			<a class="public-nav__link" routerLink="/register">Crear cuenta</a>
+		} @else {
+			<span class="public-nav__user">{{ authFlow.currentUser()?.name || authFlow.currentUser()?.email }}</span>
+			<button class="public-nav__link public-nav__button" type="button" (click)="onLogout()">Cerrar sesion</button>
+		}
+	</nav>
 </header>

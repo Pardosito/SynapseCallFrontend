@@ -1,15 +1,81 @@
-.hero-section {
-    height: 100vh;
-    padding: 40px;
-    background-color: #1e293b;
-    color: white;
+.hero {
+	background: linear-gradient(120deg, #dbeafe 0%, #eff6ff 35%, #ffffff 100%);
+	border: 1px solid #bfdbfe;
+	border-radius: 1rem;
+	padding: clamp(1.2rem, 2vw, 2rem);
 }
 
-.hero-text h1 {
-    font-size: 32px;
+.hero__content {
+	display: grid;
+	gap: 1rem;
+	max-width: 720px;
 }
 
-.hero-text p {
-    margin: 20px 0;
+.hero__eyebrow {
+	color: #1d4ed8;
+	font-size: 0.82rem;
+	font-weight: 700;
+	letter-spacing: 0.03em;
+	margin: 0;
+	text-transform: uppercase;
 }
 
+.hero h1 {
+	color: #0f172a;
+	font-size: clamp(1.4rem, 3vw, 2.2rem);
+	line-height: 1.2;
+	margin: 0;
+}
+
+.hero__description {
+	color: #334155;
+	margin: 0;
+}
+
+.hero__actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.6rem;
+}
+
+.hero__button {
+	border-radius: 0.65rem;
+	font-size: 0.9rem;
+	font-weight: 600;
+	padding: 0.6rem 1rem;
+	text-decoration: none;
+}
+
+.hero__button--primary {
+	background-color: #1d4ed8;
+	color: #ffffff;
+}
+
+.hero__button--primary:hover,
+.hero__button--primary:focus-visible {
+	background-color: #1e40af;
+	outline: none;
+}
+
+.hero__button--ghost {
+	border: 1px solid #93c5fd;
+	color: #1e3a8a;
+}
+
+.hero__button--ghost:hover,
+.hero__button--ghost:focus-visible {
+	background-color: #dbeafe;
+	outline: none;
+}
+
+.hero__benefits {
+	display: grid;
+	gap: 0.4rem;
+	margin: 0;
+	padding-left: 1rem;
+}
+
+.hero__benefits li {
+	color: #1e293b;
+	font-size: 0.88rem;
+}

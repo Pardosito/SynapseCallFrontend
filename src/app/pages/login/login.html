@@ -1,3 +1,27 @@
 <app-public-header />
-<p>login works!</p>
+
+<main class="login-page" aria-label="Ingreso a SynapseCall">
+	<section class="login-shell">
+		<header>
+			<h1>Iniciar sesion</h1>
+			<p>Accede con tu cuenta para continuar con tus reuniones y espacios de trabajo.</p>
+		</header>
+
+		<app-login-form
+			[(email)]="loginEmail"
+			[(password)]="loginPassword"
+			[disabled]="isSubmitting()"
+			(submitLogin)="submitLogin()"
+		/>
+
+		@if (errorMessage()) {
+			<p class="login-shell__feedback login-shell__feedback--error">{{ errorMessage() }}</p>
+		}
+
+		@if (successMessage()) {
+			<p class="login-shell__feedback login-shell__feedback--ok">{{ successMessage() }}</p>
+		}
+	</section>
+</main>
+
 <app-public-footer />

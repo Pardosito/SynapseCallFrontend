@@ -1,3 +1,29 @@
 <app-public-header />
-<p>register works!</p>
+
+<main class="register-page" aria-label="Registro de usuario en SynapseCall">
+	<section class="register-shell">
+		<header>
+			<h1>Crear cuenta</h1>
+			<p>Registra tus datos y prepara tu espacio para reuniones colaborativas.</p>
+		</header>
+
+		<app-register-form
+			[(name)]="registerName"
+			[(email)]="registerEmail"
+			[(password)]="registerPassword"
+			[(confirmPassword)]="registerPasswordConfirm"
+			[disabled]="isSubmitting()"
+			(submitRegister)="submitRegister()"
+		/>
+
+		@if (errorMessage()) {
+			<p class="register-shell__feedback register-shell__feedback--error">{{ errorMessage() }}</p>
+		}
+
+		@if (successMessage()) {
+			<p class="register-shell__feedback register-shell__feedback--ok">{{ successMessage() }}</p>
+		}
+	</section>
+</main>
+
 <app-public-footer />

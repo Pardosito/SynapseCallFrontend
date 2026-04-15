@@ -1,27 +1,64 @@
 .public-header {
-    width: 100%;
-    background: #56667A;
-    top: 0;
-    z-index: 20;
+	align-items: center;
+	backdrop-filter: blur(8px);
+	background: linear-gradient(90deg, #0f172a 0%, #1d4ed8 100%);
+	color: #f8fafc;
+	display: flex;
+	gap: 1rem;
+	justify-content: space-between;
+	padding: 1rem 1.5rem;
 }
 
-.header-content {
-    min-height: 72px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
+.brand {
+	display: flex;
+	flex-direction: column;
+	gap: 0.15rem;
 }
 
-.logo {
-    font-size: 1 rem;
-    font-weight: 700;
-    color: #ffffff;
+.brand__name {
+	font-size: 1.05rem;
+	font-weight: 700;
 }
 
-.nav-menu {
-    display: flex;
-    align-items: center;
-    gap: 2rem;
-    color: #000500;
+.brand__tagline {
+	font-size: 0.85rem;
+	opacity: 0.9;
+}
+
+.public-nav {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.75rem;
+}
+
+.public-nav__link {
+	border-radius: 999px;
+	color: #f8fafc;
+	font-size: 0.9rem;
+	padding: 0.35rem 0.75rem;
+	text-decoration: none;
+}
+
+.public-nav__link:hover,
+.public-nav__link:focus-visible {
+	background-color: rgb(248 250 252 / 0.2);
+	outline: none;
+}
+
+.public-nav__user {
+	background-color: rgb(248 250 252 / 0.14);
+	border-radius: 999px;
+	font-size: 0.85rem;
+	max-width: 220px;
+	overflow: hidden;
+	padding: 0.35rem 0.75rem;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.public-nav__button {
+	background: transparent;
+	border: 1px solid rgb(248 250 252 / 0.45);
+	cursor: pointer;
+	font-family: inherit;
 }

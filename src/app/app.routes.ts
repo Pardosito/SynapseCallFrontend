@@ -5,7 +5,6 @@ import { Register } from './pages/register/register';
 
 export const routes: Routes = [
 	{ path: '', component: Landing },
-	{ path: '', component: Landing },
 	{ path: 'login', component: Login },
 	{ path: 'register', component: Register },
 ];
