@@ -11,6 +11,8 @@
 			[(email)]="loginEmail"
 			[(password)]="loginPassword"
 			[disabled]="isSubmitting()"
+			[isLoading]="isSubmitting()"
+			[errorMessage]="errorMessage()"
 			(submitLogin)="submitLogin()"
 		/>
 

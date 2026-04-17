@@ -13,7 +13,10 @@
 			[(password)]="registerPassword"
 			[(confirmPassword)]="registerPasswordConfirm"
 			[disabled]="isSubmitting()"
+			[isLoading]="isSubmitting()"
+			[errorMessage]="errorMessage()"
 			(submitRegister)="submitRegister()"
+
 		/>
 
 		@if (errorMessage()) {

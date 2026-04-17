@@ -14,6 +14,8 @@ export class RegisterForm {
   readonly password = model('');
   readonly confirmPassword = model('');
   readonly disabled = input(false);
+  readonly isLoading = input(false);
+  readonly errorMessage = input('');
   readonly submitRegister = output<void>();
 
   protected submit(): void {

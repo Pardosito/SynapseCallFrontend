@@ -1,27 +1,46 @@
-<form class="login-form" (ngSubmit)="submit()">
+<form class="login-form" #loginNgForm = "ngForm" (ngSubmit)="submit()">
 	<label>
 		<span>Correo</span>
 		<input
+			#emailCtrl="ngModel"
 			type="email"
 			name="email"
 			required
-			[disabled]="disabled()"
+			email
+			[disabled]="disabled() || isLoading()"
 			[ngModel]="email()"
 			(ngModelChange)="email.set($event)"
 		/>
 	</label>
-
+	@if(emailCtrl.invalid && emailCtrl.touched){
+		<span class="error">
+			@if(emailCtrl.errors?.['required']){
+				Ingresar tu email 
+			}
+			@if(emailCtrl.errors?.['email']){
+				El formato ingresado del email es icorrecto
+			}
+		</span>
+	}
 	<label>
 		<span>Contrasena</span>
 		<input
+			#paswordCtrl="ngModel"
 			type="password"
 			name="password"
 			required
-			[disabled]="disabled()"
+			[disabled]="disabled() || isLoading()"
 			[ngModel]="password()"
 			(ngModelChange)="password.set($event)"
 		/>
 	</label>
+	@if(paswordCtrl.invalid && paswordCtrl.touched){
+		<span class="error">
+			@if(paswordCtrl.errors?.['required']){
+				Ingresa tu contraseña
+			}
+		</span>
+	}
 
-	<button type="submit" [disabled]="disabled()">Entrar</button>
+	<button type="submit" [disabled]="disabled() || isLoading() || loginNgForm.invalid ">Entrar</button>
 </form>

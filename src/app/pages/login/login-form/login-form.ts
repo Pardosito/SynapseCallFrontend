@@ -12,6 +12,8 @@ export class LoginForm {
   readonly email = model('');
   readonly password = model('');
   readonly disabled = input(false);
+  readonly isLoading = input(false);
+  readonly errorMessage = input('');
   readonly submitLogin = output<void>();
 
   protected submit(): void {
