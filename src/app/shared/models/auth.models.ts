@@ -16,8 +16,8 @@ export type AuthResponse = {
 };
 
 export type AuthUser = {
-  id: string;
-  name: string;
+  id?: string;
+  name?: string;
   email: string;
 };
 
@@ -29,3 +29,9 @@ export type AuthState = {
   accessToken: string | null;
   user: AuthUser | null;
 };
+
+export type GooglePayload = {
+  googleId: string,
+  email: string,
+  name: string
+}
