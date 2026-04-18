@@ -17,3 +17,12 @@ export interface IUser {
         paypalSubscriptionId?: string;
     };
 }
+
+export interface UserResponse {
+    message: string
+}
+
+export interface IncludedUserResponse {
+    message: string,
+    user: IUser
+}
