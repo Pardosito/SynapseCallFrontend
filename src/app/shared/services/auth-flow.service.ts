@@ -8,6 +8,7 @@ import {
   AuthUser,
   LoginPayload,
   SignupPayload,
+  GooglePayload
 } from '../models/auth.models';
 import { ApiClientService } from './api-client.service';
 import { LocalStorageService } from './local-storage.service';
@@ -40,9 +41,12 @@ export class AuthFlowService {
 
   public login(payload: LoginPayload): Observable<AuthResponse> {
     return this.apiClient.post<AuthResponse>('/auth/login', payload).pipe(
-      tap((response) => {
+      tap((response: any) => {
+
+        const tokenRecibido = response.accessToken || response.token || null;
+
         this.persistState({
-          accessToken: response.accessToken ?? null,
+          accessToken: tokenRecibido,
           user: response.user ?? this.currentUser(),
         });
       }),
@@ -123,5 +127,30 @@ export class AuthFlowService {
     this.localStorageService.setItem(AUTH_STATE_KEY, nextState);
     this.sessionStorageService.setItem(AUTH_STATE_KEY, nextState);
     this.state.set(nextState);
+  }
+
+  public verifyAccount(token: string): Observable<ApiMessageResponse> {
+    return this.apiClient.get<ApiMessageResponse>(`/auth/verify-account/${token}`);
+  }
+
+  public resetPassword(email: string, token: string): Observable<ApiMessageResponse> {
+    const payload: AuthUser = { email };
+    return this.apiClient.post<ApiMessageResponse>(`/auth/reset-password/${token}`, payload);
+  }
+
+  public forgotPassword(email: string): Observable<ApiMessageResponse> {
+    const payload: AuthUser = { email };
+    return this.apiClient.post<ApiMessageResponse>('/auth/forgot-password', payload);
+  }
+
+  public googleLogin(payload: GooglePayload): Observable<AuthResponse> {
+    return this.apiClient.post<AuthResponse>('/auth/google', payload).pipe(
+      tap((response) => {
+        this.persistState({
+          accessToken: response.accessToken ?? null,
+          user: response.user ?? this.currentUser(),
+        });
+      }),
+    );
   }
 }

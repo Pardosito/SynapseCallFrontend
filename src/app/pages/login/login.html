@@ -7,6 +7,12 @@
 			<p>Accede con tu cuenta para continuar con tus reuniones y espacios de trabajo.</p>
 		</header>
 
+		@if (successMessage()) {
+        <div class="success-banner" style="color: green; margin-bottom: 1rem;">
+          {{ successMessage() }}
+        </div>
+      }
+
 		<app-login-form
 			[(email)]="loginEmail"
 			[(password)]="loginPassword"

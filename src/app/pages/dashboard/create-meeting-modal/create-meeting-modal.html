@@ -1,1 +1,26 @@
-<p>create-meeting-modal works!</p>
+@if (errorMessage()) {
+  <div style="color: red; margin-bottom: 1rem;">{{ errorMessage() }}</div>
+}
+
+<input
+  type="text"
+  placeholder="Nombre de la reunión"
+  [(ngModel)]="title"
+  [disabled]="isLoading()"
+/>
+
+<input
+  type="datetime-local"
+  [(ngModel)]="scheduledAt"
+  [disabled]="isLoading()"
+/>
+
+<div class="tus-clases-de-botones">
+  <button (click)="close.emit()" [disabled]="isLoading()">
+    Cancelar
+  </button>
+
+  <button (click)="submit()" [disabled]="isLoading()">
+    {{ isLoading() ? 'Guardando...' : 'Crear Reunión' }}
+  </button>
+</div>

@@ -1,10 +1,11 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { finalize, switchMap } from 'rxjs/operators';
 import { PublicFooter } from '../../layouts/public-footer/public-footer';
 import { PublicHeader } from '../../layouts/public-header/public-header';
 import { LoginForm } from './login-form/login-form';
 import { AuthFlowService } from '../../shared/services/auth-flow.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -14,8 +15,9 @@ import { AuthFlowService } from '../../shared/services/auth-flow.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Login {
-  protected loginEmail = '';
-  protected loginPassword = '';
+  private router = inject(Router);
+  protected loginEmail = signal("");
+  protected loginPassword = signal("");
   protected readonly isSubmitting = signal(false);
   protected readonly errorMessage = signal('');
   protected readonly successMessage = signal('');
@@ -35,8 +37,8 @@ export class Login {
 
     this.authFlow
       .login({
-        email: this.loginEmail,
-        password_hash: this.loginPassword,
+        email: this.loginEmail(),
+        password_hash: this.loginPassword(),
       })
       .pipe(
         switchMap(() => this.authFlow.loadCurrentUser()),
@@ -45,7 +47,8 @@ export class Login {
       .subscribe({
         next: (user) => {
           const label = user?.name || this.loginEmail;
-          this.successMessage.set(`Sesion iniciada para ${label}.`);
+          this.successMessage.set(`Sesion iniciada para ${label}. Redirigiendo...`);
+          this.router.navigate(['/dashboard']);
         },
         error: (error: unknown) => {
           this.errorMessage.set(this.getErrorMessage(error));

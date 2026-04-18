@@ -1,1 +1,39 @@
-<p>meeting-list works!</p>
+<div class="meeting-list">
+  @if (isLoading()) {
+    <div class="loading-container">
+      <p>Buscando tus reuniones...</p>
+    </div>
+  }
+
+  @if (errorMessage()) {
+    <div class="error-container">
+      <p>{{ errorMessage() }}</p>
+      <button (click)="loadMeetings()">Reintentar</button>
+    </div>
+  }
+
+  @if (!isLoading() && !errorMessage()) {
+
+    @if (meetings().length === 0) {
+      <div class="empty-state">
+        <p>Aún no tienes reuniones programadas.</p>
+      </div>
+    } @else {
+      <div class="meetings-grid">
+        @for (meeting of meetings(); track meeting.id) {
+          <div class="meeting-card">
+            <div class="meeting-info">
+              <h3>{{ meeting.title }}</h3>
+              <p>Programada para: {{ meeting.startTime | date:'medium' }}</p>
+            </div>
+            <div class="meeting-actions">
+              <button class="sc-btn sc-btn-secondary">Editar</button>
+              <button class="sc-btn sc-btn-primary">Unirse</button>
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+  }
+</div>

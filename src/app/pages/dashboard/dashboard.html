@@ -1,2 +1,31 @@
-<app-dashboard-header />
-<app-dashboard-footer />
+<div class="dashboard-layout">
+  <app-dashboard-header />
+
+  @if (userIsLoggedIn()) {
+    <main class="dashboard-content">
+      <section class="welcome-section">
+        <h1>Panel de Control</h1>
+        <p>Gestiona tus videollamadas y organizaciones de SynapseCall.</p>
+      </section>
+
+      <app-create-join-meeting-input (createMeeting)="openCreateModal()" />
+
+      <app-meeting-list />
+    </main>
+  } @else {
+    <main class="dashboard-content loading-state">
+      <p>Cargando tu sesión...</p>
+    </main>
+  }
+
+  <app-dashboard-footer />
+
+  @if (isModalOpen()) {
+    <div class="modal-overlay">
+      <app-create-meeting-modal
+        (close)="closeCreateModal()"
+        (meetingCreated)="closeCreateModal()"
+      />
+    </div>
+  }
+</div>
