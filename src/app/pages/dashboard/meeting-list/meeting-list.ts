@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@ang
 import { CommonModule } from '@angular/common';
 import { MeetingService } from '../../../services/meeting.service';
 import { IMeeting } from '../../../shared/models/meeting.model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-meeting-list',
@@ -13,6 +14,7 @@ import { IMeeting } from '../../../shared/models/meeting.model';
 })
 export class MeetingList implements OnInit {
   private meetingService = inject(MeetingService);
+  private router = inject(Router);
 
   meetings = signal<IMeeting[]>([]);
   isLoading = signal(true);
@@ -39,5 +41,13 @@ export class MeetingList implements OnInit {
         this.isLoading.set(false);
       }
     });
+  }
+
+  joinMeeting(meetingId: string | undefined): void {
+    if (meetingId) {
+      this.router.navigate(['/room', meetingId]);
+    } else {
+      console.error('La reunión no tiene un ID válido');
+    }
   }
 }

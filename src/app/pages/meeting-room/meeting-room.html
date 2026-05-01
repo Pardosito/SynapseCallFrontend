@@ -1,1 +1,49 @@
-<p>meeting-room works!</p>
+<div class="meeting-room-container">
+
+  @if (isLoading()) {
+    <div class="loading-screen">
+      <h2>Entrando a la sala...</h2>
+    </div>
+  }
+
+  @if (errorMessage()) {
+    <div class="error-screen">
+      <h2>{{ errorMessage() }}</h2>
+      <button class="sc-btn sc-btn-primary" (click)="leaveMeeting()">Volver al Dashboard</button>
+    </div>
+  }
+
+  @if (!isLoading() && meetingData()) {
+
+    <header class="room-header">
+      <h2>{{ meetingData()?.title || 'Reunión sin título' }}</h2>
+    </header>
+
+    <main class="room-main-layout">
+      <div class="video-area">
+        <app-video-grid />
+      </div>
+
+      @if (isChatOpen()) {
+        <aside class="side-panel">
+          <app-chat-panel (closePanel)="toggleChat()" />
+        </aside>
+      }
+
+      @if (isFileViewerOpen()) {
+        <aside class="side-panel">
+          <app-file-viewer (closePanel)="toggleFileViewer()" />
+        </aside>
+      }
+    </main>
+
+    <footer class="room-controls">
+      <app-media-controls
+        (toggleChatEvent)="toggleChat()"
+        (toggleFilesEvent)="toggleFileViewer()"
+        (leaveMeetingEvent)="leaveMeeting()"
+      />
+    </footer>
+
+  }
+</div>

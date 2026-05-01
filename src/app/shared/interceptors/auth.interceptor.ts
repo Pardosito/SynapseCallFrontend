@@ -10,6 +10,9 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const router = inject(Router)
   const token = authFlowService.accessToken();
 
+  console.log('Interceptando petición a:', req.url);
+  console.log('Token disponible:', token ? 'Sí hay token' : 'NO HAY TOKEN');
+
   let clonedRequest = req;
   if (token) {
     clonedRequest = req.clone({

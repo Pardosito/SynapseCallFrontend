@@ -1,34 +1,67 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, inject, signal, OnDestroy } from '@angular/core';
 import { io, Socket } from 'socket.io-client';
-import { environment } from '../../environments/environment.development'; //TODO: Hay que cambiar a la de prod ya que terminemos el desarrollo
+import { Observable, Subject } from 'rxjs';
+import { environment } from '../../environments/environment.development';
+import { AuthFlowService } from '../shared/services/auth-flow.service';
+import { LocalStorageService } from '../shared/services/local-storage.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class SignalingService {
-  private socket!: Socket;
+export class SignalingService implements OnDestroy {
+  private socket: Socket | null = null;
+  private storageService = inject(LocalStorageService);
 
-  public chatMessages = signal<any[]>([]);
+  private socketUrl = new URL(environment.apiUrl).origin;
+  private authFlow = inject(AuthFlowService);
+  public isConnected = signal(false);
 
-  joinRoom(roomId: string, userId: string) {
-    this.socket = io(environment.apiUrl);
-    this.socket.emit('join-room', { roomId, userId });
-    this.socket.on('user-connected', (newUserId) => {
-      console.log('Un nuevo participante entró con el ID:', newUserId);
+  connect(): void {
+    const token = this.authFlow.accessToken();
+
+    if (!token) {
+      console.error('No se puede conectar al socket sin autenticación.');
+      return;
+    }
+
+    this.socket = io(this.socketUrl, {
+      auth: { token: token }
     });
 
-    this.socket.on('receive-message', (message) => {
-      this.chatMessages.update(msgs => [...msgs, message]);
+    this.socket.on('connect', () => {
+      console.log('Conectado al servidor de Sockets. ID:', this.socket?.id);
+      this.isConnected.set(true);
+    });
+
+    this.socket.on('disconnect', () => {
+      console.log('Desconectado del servidor de Sockets.');
+      this.isConnected.set(false);
     });
   }
 
-  sendChatMessage(roomId: string, message: string) {
-    this.socket.emit('send-message', { roomId, message });
+  joinRoom(roomId: string, userId: string): void {
+    if (this.socket) {
+      this.socket.emit('join-meeting', roomId, userId);
+    }
   }
 
-  disconnect() {
+  disconnect(): void {
     if (this.socket) {
       this.socket.disconnect();
+      this.socket = null;
     }
+  }
+
+  onUserJoined(): Observable<string> {
+    return new Observable((observer) => {
+      this.socket?.on('user-connected', (userId: string) => {
+        console.log(`El usuario ${userId} acaba de entrar a la sala.`);
+        observer.next(userId);
+      });
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.disconnect();
   }
 }
