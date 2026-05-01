@@ -84,10 +84,11 @@ export class AuthFlowService {
     );
   }
 
-  public logout(): void {
-    this.state.set({ accessToken: null, user: null });
-    this.sessionStorageService.removeItem(AUTH_STATE_KEY);
-    this.localStorageService.removeItem(AUTH_STATE_KEY);
+  public logout(): Observable<ApiMessageResponse> {
+    return this.apiClient.post<ApiMessageResponse>('/auth/logout', {}).pipe(
+      catchError(() => of({ message: 'Logged out' })),
+      tap(() => this.clearState()),
+    );
   }
 
   private hydrateMemoryFromStorages(): void {
@@ -152,5 +153,11 @@ export class AuthFlowService {
         });
       }),
     );
+  }
+
+  private clearState(): void {
+    this.state.set({ accessToken: null, user: null });
+    this.sessionStorageService.removeItem(AUTH_STATE_KEY);
+    this.localStorageService.removeItem(AUTH_STATE_KEY);
   }
 }

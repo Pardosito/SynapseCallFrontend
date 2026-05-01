@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../environments/environment.development'; //TODO: Hay que cambiar a la de prod ya que terminemos el desarrollo
+import { environment } from '../../environments/environment';
 import { IncludeOrgResponse, IOrganization, OrgResponse } from '../shared/models/org.model';
 import { Observable } from 'rxjs';
 
@@ -8,41 +8,37 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class OrganizationsService {
-  private http = inject(HttpClient);
-  private organizationsService = inject(OrganizationsService);
+  private readonly http = inject(HttpClient);
   private baseUrl = `${environment.apiUrl}/orgs`;
 
-  //TODO: Tmb, hay que ver que rollo con las llamadas al backend para toda esta info
   createNewOrg(name: string, orderId: string, logoFile?: File): Observable<IncludeOrgResponse> {
     const formData = new FormData();
 
-    formData.append("name", name);
-    formData.append("orderId", orderId);
+    formData.append('name', name);
+    formData.append('orderId', orderId);
 
     if (logoFile) {
-      formData.append("file", logoFile);
+      formData.append('file', logoFile);
     }
 
-    return this.http.post<IncludeOrgResponse>(`${this.baseUrl}/create`, formData);
+    return this.http.post<IncludeOrgResponse>(`${this.baseUrl}/create`, formData, { withCredentials: true });
   }
 
   addMemberToOrg(email: string, orgId: string): Observable<OrgResponse> {
-    const payload = {
-      email
-    }
+    const payload = { email };
 
-    return this.http.post<OrgResponse>(`${this.baseUrl}/${orgId}/members`, payload)
+    return this.http.post<OrgResponse>(`${this.baseUrl}/${orgId}/members`, payload, { withCredentials: true });
   }
 
   getOrgById(id: string): Observable<OrgResponse> {
-    return this.http.get<OrgResponse>(`${this.baseUrl}/${id}`)
+    return this.http.get<OrgResponse>(`${this.baseUrl}/${id}`, { withCredentials: true });
   }
 
   updateOrgById(orgId: string, data: Partial<IOrganization>): Observable<IncludeOrgResponse> {
-    return this.http.post<IncludeOrgResponse>(`${this.baseUrl}/${orgId}`, data);
+    return this.http.patch<IncludeOrgResponse>(`${this.baseUrl}/${orgId}`, data, { withCredentials: true });
   }
 
   deleteOrgById(orgId: string): Observable<OrgResponse> {
-    return this.http.delete<OrgResponse>(`${this.baseUrl}/${orgId}`);
+    return this.http.delete<OrgResponse>(`${this.baseUrl}/${orgId}`, { withCredentials: true });
   }
 }

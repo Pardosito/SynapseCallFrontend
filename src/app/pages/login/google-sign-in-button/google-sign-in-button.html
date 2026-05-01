@@ -1,1 +1,16 @@
-<p>google-sign-in-button works!</p>
+
+<section class="google-sign-in" [class.google-sign-in--disabled]="disabled()" aria-label="Acceso con Google">
+	<header class="google-sign-in__header">
+		<p class="google-sign-in__eyebrow">Continuar con Google</p>
+		<span class="google-sign-in__divider"></span>
+	</header>
+
+	<div #buttonHost class="google-sign-in__button"></div>
+	@if (!environment.googleClientId) {
+		<p class="google-sign-in__fallback">Configura el client id de Google para activar este botón.</p>
+	} @else if (loadError()) {
+		<p class="google-sign-in__fallback">{{ loadError() }}</p>
+	} @else if (!isReady()) {
+		<p class="google-sign-in__fallback">Preparando acceso seguro...</p>
+	}
+</section>

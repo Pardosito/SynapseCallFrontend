@@ -4,12 +4,13 @@ import { finalize, switchMap } from 'rxjs/operators';
 import { PublicFooter } from '../../layouts/public-footer/public-footer';
 import { PublicHeader } from '../../layouts/public-header/public-header';
 import { LoginForm } from './login-form/login-form';
+import { GoogleSignInButton } from './google-sign-in-button/google-sign-in-button';
 import { AuthFlowService } from '../../shared/services/auth-flow.service';
 import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
-  imports: [PublicHeader, PublicFooter, LoginForm],
+  imports: [PublicHeader, PublicFooter, LoginForm, GoogleSignInButton],
   templateUrl: './login.html',
   styleUrl: './login.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -28,7 +29,7 @@ export class Login {
     this.errorMessage.set('');
     this.successMessage.set('');
 
-    if (!this.loginEmail || !this.loginPassword) {
+    if (!this.loginEmail() || !this.loginPassword()) {
       this.errorMessage.set('Debes completar correo y contrasena.');
       return;
     }
@@ -46,9 +47,33 @@ export class Login {
       )
       .subscribe({
         next: (user) => {
-          const label = user?.name || this.loginEmail;
+          const label = user?.name || this.loginEmail();
           this.successMessage.set(`Sesion iniciada para ${label}. Redirigiendo...`);
           this.router.navigate(['/dashboard']);
+        },
+        error: (error: unknown) => {
+          this.errorMessage.set(this.getErrorMessage(error));
+        },
+      });
+  }
+
+  protected submitGoogleLogin(credential: string): void {
+    this.errorMessage.set('');
+    this.successMessage.set('');
+
+    this.isSubmitting.set(true);
+
+    this.authFlow
+      .googleLogin({ credential })
+      .pipe(
+        switchMap(() => this.authFlow.loadCurrentUser(true)),
+        finalize(() => this.isSubmitting.set(false)),
+      )
+      .subscribe({
+        next: (user) => {
+          const label = user?.name || user?.email || 'tu cuenta';
+          this.successMessage.set(`Sesion iniciada para ${label}. Redirigiendo...`);
+          void this.router.navigate(['/dashboard']);
         },
         error: (error: unknown) => {
           this.errorMessage.set(this.getErrorMessage(error));

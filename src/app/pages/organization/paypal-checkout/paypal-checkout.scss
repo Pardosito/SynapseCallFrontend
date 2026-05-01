@@ -1,0 +1,45 @@
+.paypal-checkout {
+	display: grid;
+	gap: 0.85rem;
+	padding: 1rem;
+	background: #fff;
+	border: 1px solid #dbeafe;
+	border-radius: 1rem;
+}
+
+.paypal-checkout__header {
+	display: grid;
+	gap: 0.35rem;
+}
+
+.paypal-checkout__eyebrow {
+	margin: 0;
+	color: #1d4ed8;
+	font-size: 0.82rem;
+	font-weight: 800;
+	text-transform: uppercase;
+	letter-spacing: 0.08em;
+}
+
+.paypal-checkout h3 {
+	margin: 0;
+	color: #0f172a;
+	font-size: 1.1rem;
+}
+
+.paypal-checkout p {
+	margin: 0;
+	color: #475569;
+	font-size: 0.92rem;
+}
+
+.paypal-checkout__notice {
+	background: #eff6ff;
+	border-radius: 0.75rem;
+	color: #1e293b;
+	padding: 0.75rem 0.85rem;
+}
+
+.paypal-checkout__button {
+	min-height: 48px;
+}

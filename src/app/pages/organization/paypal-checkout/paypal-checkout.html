@@ -1,1 +1,17 @@
-<p>paypal-checkout works!</p>
+<section class="paypal-checkout" aria-label="Pago con PayPal">
+	<header class="paypal-checkout__header">
+		<p class="paypal-checkout__eyebrow">Paso 2</p>
+		<h3>Completa el pago con PayPal</h3>
+		<p>El botón se activa cuando el nombre de la organización ya está listo.</p>
+	</header>
+
+	@if (!hasClientId()) {
+		<p class="paypal-checkout__notice">Configura `paypalClientId` en el entorno del frontend para mostrar el botón.</p>
+	} @else if (isLoading()) {
+		<p class="paypal-checkout__notice">Preparando PayPal...</p>
+	} @else if (!isReady()) {
+		<p class="paypal-checkout__notice">Inicializando el pago seguro...</p>
+	}
+
+	<div #checkoutHost class="paypal-checkout__button"></div>
+</section>
