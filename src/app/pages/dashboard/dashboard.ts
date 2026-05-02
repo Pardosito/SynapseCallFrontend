@@ -24,6 +24,7 @@ export class Dashboard {
   private authFlowService = inject(AuthFlowService);
 
   isModalOpen = signal(false);
+  reloadCounter = signal(0);
 
   userIsLoggedIn = this.authFlowService.isAuthenticated;
 
@@ -33,5 +34,10 @@ export class Dashboard {
 
   closeCreateModal() {
     this.isModalOpen.set(false);
+  }
+
+  onMeetingCreated() {
+    this.closeCreateModal();
+    this.reloadCounter.update(v => v + 1);
   }
 }

@@ -185,6 +185,27 @@
   }
 }
 
+.delete-item-btn {
+  background: none;
+  border: none;
+  padding: 0.2rem;
+  border-radius: 4px;
+  color: #475569;
+  cursor: pointer;
+  display: flex;
+  opacity: 0;
+  transition: opacity 0.15s, color 0.15s, background 0.15s;
+
+  &:hover {
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.1);
+  }
+}
+
+.agenda-item:hover .delete-item-btn {
+  opacity: 1;
+}
+
 .dot--active {
   width: 8px;
   height: 8px;

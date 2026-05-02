@@ -1,0 +1,171 @@
+.meeting-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.meeting-list__header {
+  h2 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #0f172a;
+  }
+}
+
+.meeting-list__state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 3rem 1rem;
+  color: #64748b;
+  font-size: 0.9rem;
+
+  &--error { color: #ef4444; }
+}
+
+.meeting-list__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 3rem 1rem;
+  color: #94a3b8;
+  text-align: center;
+
+  p {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #64748b;
+  }
+
+  span {
+    font-size: 0.85rem;
+  }
+}
+
+.meetings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.meeting-card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  transition: box-shadow 0.15s;
+
+  &:hover { box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08); }
+}
+
+.meeting-card__top {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.meeting-card__status {
+  display: inline-block;
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+
+  &--scheduled {
+    background: #dbeafe;
+    color: #1d4ed8;
+  }
+
+  &--ongoing {
+    background: #dcfce7;
+    color: #15803d;
+  }
+
+  &--ended {
+    background: #f1f5f9;
+    color: #64748b;
+  }
+}
+
+.meeting-card__title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #0f172a;
+  line-height: 1.4;
+}
+
+.meeting-card__date {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0;
+  font-size: 0.82rem;
+  color: #64748b;
+
+  svg { flex-shrink: 0; }
+}
+
+.meeting-card__actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: auto;
+  padding-top: 0.5rem;
+  border-top: 1px solid #f1f5f9;
+}
+
+// Shared button utilities
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  border-radius: 7px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  border: 1px solid transparent;
+
+  &--primary {
+    background: #2563eb;
+    color: #fff;
+
+    &:hover { background: #1d4ed8; }
+  }
+
+  &--ghost {
+    background: transparent;
+    border-color: #e2e8f0;
+    color: #475569;
+
+    &:hover { border-color: #94a3b8; color: #0f172a; }
+  }
+
+  &--sm {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.8rem;
+    flex: 1;
+  }
+}
+
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid #e2e8f0;
+  border-top-color: #2563eb;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

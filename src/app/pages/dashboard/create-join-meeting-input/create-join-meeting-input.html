@@ -1,1 +1,26 @@
-<p>create-join-meeting-input works!</p>
+<div class="action-bar">
+  <button class="action-bar__create" (click)="createMeeting.emit()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16">
+      <line x1="12" y1="5" x2="12" y2="19"/>
+      <line x1="5" y1="12" x2="19" y2="12"/>
+    </svg>
+    Nueva reunión
+  </button>
+
+  <div class="action-bar__join">
+    <input
+      type="text"
+      placeholder="Unirse con ID de reunión"
+      [(ngModel)]="joinId"
+      (keyup.enter)="joinMeeting()"
+      class="action-bar__input"
+    />
+    <button
+      class="action-bar__join-btn"
+      (click)="joinMeeting()"
+      [disabled]="!joinId.trim()"
+    >
+      Unirse
+    </button>
+  </div>
+</div>

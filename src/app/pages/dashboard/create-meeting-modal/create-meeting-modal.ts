@@ -16,14 +16,14 @@ export class CreateMeetingModal {
   readonly close = output<void>();
   readonly meetingCreated = output<void>();
 
-  title = signal('');
-  scheduledAt = signal('');
+  title = '';
+  scheduledAt = '';
 
   isLoading = signal(false);
   errorMessage = signal<string | null>(null);
 
   protected submit(): void {
-    if (!this.title() || !this.scheduledAt()) {
+    if (!this.title.trim() || !this.scheduledAt) {
       this.errorMessage.set('El título y la fecha son obligatorios.');
       return;
     }
@@ -32,8 +32,8 @@ export class CreateMeetingModal {
     this.errorMessage.set(null);
 
     this.meetingService.createMeeting({
-      title: this.title(),
-      startTime: new Date(this.scheduledAt())
+      title: this.title.trim(),
+      startTime: new Date(this.scheduledAt)
     }).subscribe({
       next: () => {
         this.isLoading.set(false);

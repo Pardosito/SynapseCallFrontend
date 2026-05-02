@@ -66,29 +66,44 @@ export class AgendaPanel implements OnInit, OnDestroy {
   }
 
   subscribeToSocketEvents(): void {
-    const updateSub = this.signalingService.onAgendaUpdate().subscribe(data => {
-      this.activeItem.set(data.currentItem);
-      this.isFinished.set(false);
-      this.items.update(list =>
-        list.map(i => this.itemId(i) === this.itemId(data.currentItem) ? data.currentItem : i)
-      );
-      this.startTimer(data.currentItem);
-    });
+    this.subs.push(
+      this.signalingService.onAgendaUpdate().subscribe(data => {
+        this.activeItem.set(data.currentItem);
+        this.isFinished.set(false);
+        this.items.update(list =>
+          list.map(i => this.itemId(i) === this.itemId(data.currentItem) ? data.currentItem : i)
+        );
+        this.startTimer(data.currentItem);
+      }),
 
-    const finishedSub = this.signalingService.onAgendaFinished().subscribe(() => {
-      this.activeItem.set(null);
-      this.isFinished.set(true);
-      this.stopTimer();
-      this.loadAgenda();
-    });
+      this.signalingService.onAgendaFinished().subscribe(() => {
+        this.activeItem.set(null);
+        this.isFinished.set(true);
+        this.stopTimer();
+        this.loadAgenda();
+      }),
 
-    const stoppedSub = this.signalingService.onAgendaStopped().subscribe(() => {
-      this.activeItem.set(null);
-      this.stopTimer();
-      this.loadAgenda();
-    });
+      this.signalingService.onAgendaStopped().subscribe(() => {
+        this.activeItem.set(null);
+        this.stopTimer();
+        this.loadAgenda();
+      }),
 
-    this.subs.push(updateSub, finishedSub, stoppedSub);
+      this.signalingService.onAgendaItemAdded().subscribe(item => {
+        this.items.update(list => {
+          if (list.find(i => this.itemId(i) === this.itemId(item))) return list;
+          return [...list, item];
+        });
+      }),
+
+      this.signalingService.onAgendaItemDeleted().subscribe(itemId => {
+        this.items.update(list => list.filter(i => this.itemId(i) !== itemId));
+        if (this.itemId(this.activeItem()!) === itemId) {
+          this.activeItem.set(null);
+          this.stopTimer();
+        }
+      }),
+    );
   }
 
   startTimer(item: IAgendaItem): void {
@@ -157,6 +172,14 @@ export class AgendaPanel implements OnInit, OnDestroy {
   stopAgenda(): void {
     const active = this.activeItem();
     if (active) this.signalingService.emitAgendaStop(this.itemId(active));
+  }
+
+  deleteItem(item: IAgendaItem): void {
+    const id = this.itemId(item);
+    if (!id || item.status === 'active') return;
+    this.agendaService.deleteAgendaItem(id).subscribe({
+      next: () => this.items.update(list => list.filter(i => this.itemId(i) !== id)),
+    });
   }
 
   get formattedTime(): string {

@@ -1,33 +1,57 @@
-<div class="meeting-list">
+<section class="meeting-list">
+  <div class="meeting-list__header">
+    <h2>Tus reuniones</h2>
+  </div>
+
   @if (isLoading()) {
-    <div class="loading-container">
+    <div class="meeting-list__state">
+      <div class="spinner"></div>
       <p>Buscando tus reuniones...</p>
     </div>
   }
 
   @if (errorMessage()) {
-    <div class="error-container">
+    <div class="meeting-list__state meeting-list__state--error">
       <p>{{ errorMessage() }}</p>
-      <button (click)="loadMeetings()">Reintentar</button>
+      <button class="btn btn--ghost" (click)="loadMeetings()">Reintentar</button>
     </div>
   }
 
   @if (!isLoading() && !errorMessage()) {
     @if (meetings().length === 0) {
-      <div class="empty-state">
-        <p>Aún no tienes reuniones programadas.</p>
+      <div class="meeting-list__empty">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="40" height="40">
+          <rect x="3" y="4" width="18" height="18" rx="2"/>
+          <line x1="16" y1="2" x2="16" y2="6"/>
+          <line x1="8" y1="2" x2="8" y2="6"/>
+          <line x1="3" y1="10" x2="21" y2="10"/>
+        </svg>
+        <p>No tienes reuniones programadas.</p>
+        <span>Crea una nueva reunión para comenzar.</span>
       </div>
     } @else {
       <div class="meetings-grid">
         @for (meeting of meetings(); track meeting._id) {
           <div class="meeting-card">
-            <div class="meeting-info">
-              <h3>{{ meeting.title }}</h3>
-              <p>Programada para: {{ meeting.startTime | date: 'medium' }}</p>
+            <div class="meeting-card__top">
+              <span class="meeting-card__status meeting-card__status--{{ meeting.status }}">
+                {{ statusLabel(meeting.status) }}
+              </span>
             </div>
-            <div class="meeting-actions">
-              <button class="sc-btn sc-btn-secondary">Editar</button>
-              <button class="sc-btn sc-btn-primary" (click)="joinMeeting(meeting._id)">
+
+            <h3 class="meeting-card__title">{{ meeting.title }}</h3>
+
+            <p class="meeting-card__date">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+                <circle cx="12" cy="12" r="10"/>
+                <polyline points="12 6 12 12 16 14"/>
+              </svg>
+              {{ meeting.startTime | date: 'd MMM y, HH:mm' }}
+            </p>
+
+            <div class="meeting-card__actions">
+              <button class="btn btn--ghost btn--sm">Editar</button>
+              <button class="btn btn--primary btn--sm" (click)="joinMeeting(meeting._id)">
                 Unirse
               </button>
             </div>
@@ -36,4 +60,4 @@
       </div>
     }
   }
-</div>
+</section>

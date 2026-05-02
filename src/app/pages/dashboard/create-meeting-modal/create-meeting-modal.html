@@ -1,26 +1,48 @@
-@if (errorMessage()) {
-  <div style="color: red; margin-bottom: 1rem;">{{ errorMessage() }}</div>
-}
+<div class="modal">
+  <div class="modal__header">
+    <h2>Nueva reunión</h2>
+    <button class="modal__close" (click)="close.emit()" aria-label="Cerrar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="18" height="18">
+        <line x1="18" y1="6" x2="6" y2="18"/>
+        <line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+  </div>
 
-<input
-  type="text"
-  placeholder="Nombre de la reunión"
-  [(ngModel)]="title"
-  [disabled]="isLoading()"
-/>
+  <div class="modal__body">
+    @if (errorMessage()) {
+      <p class="modal__error">{{ errorMessage() }}</p>
+    }
 
-<input
-  type="datetime-local"
-  [(ngModel)]="scheduledAt"
-  [disabled]="isLoading()"
-/>
+    <div class="form-field">
+      <label for="meetingTitle">Título</label>
+      <input
+        id="meetingTitle"
+        type="text"
+        placeholder="Ej. Reunión de equipo"
+        [(ngModel)]="title"
+        [disabled]="isLoading()"
+        autocomplete="off"
+      />
+    </div>
 
-<div class="tus-clases-de-botones">
-  <button (click)="close.emit()" [disabled]="isLoading()">
-    Cancelar
-  </button>
+    <div class="form-field">
+      <label for="meetingDate">Fecha y hora</label>
+      <input
+        id="meetingDate"
+        type="datetime-local"
+        [(ngModel)]="scheduledAt"
+        [disabled]="isLoading()"
+      />
+    </div>
+  </div>
 
-  <button (click)="submit()" [disabled]="isLoading()">
-    {{ isLoading() ? 'Guardando...' : 'Crear Reunión' }}
-  </button>
+  <div class="modal__footer">
+    <button class="btn btn--ghost" (click)="close.emit()" [disabled]="isLoading()">
+      Cancelar
+    </button>
+    <button class="btn btn--primary" (click)="submit()" [disabled]="isLoading()">
+      {{ isLoading() ? 'Creando...' : 'Crear reunión' }}
+    </button>
+  </div>
 </div>

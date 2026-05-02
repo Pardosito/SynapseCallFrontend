@@ -1,15 +1,13 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { finalize } from 'rxjs/operators';
-import { PricingTiers } from './pricing-tiers/pricing-tiers';
-import { CreateOrganizationForm } from './create-organization-form/create-organization-form';
-import { PaypalCheckout } from './paypal-checkout/paypal-checkout';
 import { OrganizationsService } from '../../services/organizations.service';
+import { PaypalCheckout } from './paypal-checkout/paypal-checkout';
 
 @Component({
   selector: 'app-organization',
-  imports: [RouterLink, PricingTiers, CreateOrganizationForm, PaypalCheckout],
+  imports: [PaypalCheckout],
   templateUrl: './organization.html',
   styleUrl: './organization.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

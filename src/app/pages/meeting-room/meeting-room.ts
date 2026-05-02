@@ -1,4 +1,7 @@
-import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy, Component, computed,
+  inject, OnDestroy, OnInit, signal,
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MeetingService } from '../../services/meeting.service';
 import { IMeeting } from '../../shared/models/meeting.model';
@@ -8,6 +11,8 @@ import { ChatPanel } from './chat-panel/chat-panel';
 import { FileViewer } from './file-viewer/file-viewer';
 import { AgendaPanel } from './agenda-panel/agenda-panel';
 import { SignalingService } from '../../services/signaling.service';
+import { AuthFlowService } from '../../shared/services/auth-flow.service';
+
 @Component({
   selector: 'app-meeting-room',
   standalone: true,
@@ -17,26 +22,33 @@ import { SignalingService } from '../../services/signaling.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MeetingRoom implements OnInit, OnDestroy {
-  private route = inject(ActivatedRoute);
-  private router = inject(Router);
-  private meetingService = inject(MeetingService);
+  private route            = inject(ActivatedRoute);
+  private router           = inject(Router);
+  private meetingService   = inject(MeetingService);
   private signalingService = inject(SignalingService);
+  private authFlow         = inject(AuthFlowService);
 
-  protected readonly isChatOpen = signal(false);
-  protected readonly isAgendaOpen = signal(false);
+  protected readonly isChatOpen       = signal(false);
+  protected readonly isAgendaOpen     = signal(false);
   protected readonly isFileViewerOpen = signal(false);
-  protected readonly isMuted = signal(false);
-  protected readonly isCameraOff = signal(false);
+  protected readonly isMuted          = signal(false);
+  protected readonly isCameraOff      = signal(false);
 
-  meetingId = signal<string | null>(null);
-  meetingData = signal<IMeeting | null>(null);
+  meetingId    = signal<string | null>(null);
+  meetingData  = signal<IMeeting | null>(null);
   meetingConfig = signal<any>(null);
-  isLoading = signal(true);
+  isLoading    = signal(true);
   errorMessage = signal<string | null>(null);
+
+  readonly userName = computed(() => {
+    const configName = this.meetingConfig()?.userName;
+    if (configName && configName !== 'Invitado') return configName;
+    const user = this.authFlow.currentUser();
+    return user?.name || user?.email || 'Usuario';
+  });
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
-
     if (id) {
       this.meetingId.set(id);
       this.loadMeetingDetails(id);
@@ -46,7 +58,7 @@ export class MeetingRoom implements OnInit, OnDestroy {
     }
   }
 
-  loadMeetingDetails(id: string) {
+  loadMeetingDetails(id: string): void {
     this.meetingService.getMeetingById(id).subscribe({
       next: (data: any) => {
         this.meetingData.set(data.meeting);
@@ -54,12 +66,7 @@ export class MeetingRoom implements OnInit, OnDestroy {
         this.isLoading.set(false);
 
         this.signalingService.connect();
-        const myUserName = data.config.userName || 'Usuario';
-        this.signalingService.joinRoom(id, myUserName);
-
-        this.signalingService.onUserJoined().subscribe((newUserId) => {
-          console.log('Preparando video para:', newUserId);
-        });
+        this.signalingService.joinRoom(id, this.userName());
       },
       error: (err) => {
         this.errorMessage.set(err.error?.message || 'La reunión no existe o no tienes acceso.');
@@ -68,13 +75,8 @@ export class MeetingRoom implements OnInit, OnDestroy {
     });
   }
 
-  protected onToggleMute(): void {
-    this.isMuted.update(v => !v);
-  }
-
-  protected onToggleCamera(): void {
-    this.isCameraOff.update(v => !v);
-  }
+  protected onToggleMute(): void   { this.isMuted.update(v => !v); }
+  protected onToggleCamera(): void { this.isCameraOff.update(v => !v); }
 
   protected toggleChat(): void {
     this.isAgendaOpen.set(false);

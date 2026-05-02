@@ -38,7 +38,7 @@
 
       @if (isChatOpen()) {
         <aside class="side-panel">
-          <app-chat-panel (closePanel)="toggleChat()" />
+          <app-chat-panel [userName]="userName()" (closePanel)="toggleChat()" />
         </aside>
       }
 
@@ -54,7 +54,11 @@
 
       @if (isFileViewerOpen()) {
         <aside class="side-panel">
-          <app-file-viewer (closePanel)="toggleFileViewer()" />
+          <app-file-viewer
+            [meetingId]="meetingId()!"
+            [initialLinks]="meetingConfig()?.downloadLinks || []"
+            (closePanel)="toggleFileViewer()"
+          />
         </aside>
       }
     </main>
