@@ -1,32 +1,32 @@
 <app-public-header />
 
 <main class="register-page" aria-label="Registro de usuario en SynapseCall">
-	<section class="register-shell">
-		<header>
-			<h1>Crear cuenta</h1>
-			<p>Registra tus datos y prepara tu espacio para reuniones colaborativas.</p>
-		</header>
+  <section class="register-shell">
+    <header>
+      <h1>Crear cuenta</h1>
+      <p>Registra tus datos y prepara tu espacio para reuniones colaborativas.</p>
+    </header>
 
-		<app-register-form
-			[(name)]="registerName"
-			[(email)]="registerEmail"
-			[(password)]="registerPassword"
-			[(confirmPassword)]="registerPasswordConfirm"
-			[disabled]="isSubmitting()"
-			[isLoading]="isSubmitting()"
-			[errorMessage]="errorMessage()"
-			(submitRegister)="submitRegister()"
+    <div class="register-box">
+      <app-register-form
+        [isLoading]="isSubmitting()"
+        [errorMessage]="errorMessage()"
+        (submitRegister)="submitRegister()"
+      ></app-register-form>
 
-		/>
+      <div class="separator">O regístrate con</div>
 
-		@if (errorMessage()) {
-			<p class="register-shell__feedback register-shell__feedback--error">{{ errorMessage() }}</p>
-		}
+      <app-google-sign-in-button (googleCredential)="handleGoogleLogin($event)" />
+    </div>
 
-		@if (successMessage()) {
-			<p class="register-shell__feedback register-shell__feedback--ok">{{ successMessage() }}</p>
-		}
-	</section>
+    @if (errorMessage()) {
+      <p class="register-shell__feedback register-shell__feedback--error">{{ errorMessage() }}</p>
+    }
+
+    @if (successMessage()) {
+      <p class="register-shell__feedback register-shell__feedback--ok">{{ successMessage() }}</p>
+    }
+  </section>
 </main>
 
 <app-public-footer />

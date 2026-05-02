@@ -14,8 +14,16 @@ type GoogleWindow = Window & {
   google?: {
     accounts?: {
       id?: {
-        initialize: (options: { client_id: string; callback: (response: { credential?: string }) => void }) => void;
+        initialize: (options: {
+          client_id: string;
+          callback: (response: { credential?: string }) => void;
+          context?: string;
+          itp_support?: boolean;
+        }) => void;
+
         renderButton: (element: HTMLElement, options: GoogleAccountsButtonOptions) => void;
+
+        prompt: () => void;
       };
     };
   };
@@ -105,6 +113,8 @@ export class GoogleSignInButton implements AfterViewInit {
           this.googleCredential.emit(response.credential);
         }
       },
+      context: 'use',
+      itp_support: true
     });
 
     googleId.renderButton(host, {
@@ -115,6 +125,8 @@ export class GoogleSignInButton implements AfterViewInit {
       logo_alignment: 'left',
       width: buttonWidth,
     });
+
+    googleId.prompt();
 
     this.isReady.set(true);
   }

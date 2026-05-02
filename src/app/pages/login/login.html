@@ -1,35 +1,40 @@
 <app-public-header />
 
 <main class="login-page" aria-label="Ingreso a SynapseCall">
-	<section class="login-shell">
-		<header>
-			<h1>Iniciar sesion</h1>
-			<p>Accede con tu cuenta para continuar con tus reuniones y espacios de trabajo.</p>
-		</header>
+  <section class="login-shell">
+    <header>
+      <h1>Iniciar sesion</h1>
+      <p>Accede con tu cuenta para continuar con tus reuniones y espacios de trabajo.</p>
+    </header>
 
-		@if (successMessage()) {
-        <div class="success-banner" style="color: green; margin-bottom: 1rem;">
-          {{ successMessage() }}
-        </div>
-      }
+    @if (successMessage()) {
+      <div class="success-banner" style="color: green; margin-bottom: 1rem">
+        {{ successMessage() }}
+      </div>
+    }
+    <div class="login-box">
+      <app-login-form
+        [(email)]="loginEmail"
+        [(password)]="loginPassword"
+        [isLoading]="isSubmitting()"
+        [errorMessage]="errorMessage()"
+        (submitLogin)="submitLogin()"
+      ></app-login-form>
 
-		<app-login-form
-			[(email)]="loginEmail"
-			[(password)]="loginPassword"
-			[disabled]="isSubmitting()"
-			[isLoading]="isSubmitting()"
-			[errorMessage]="errorMessage()"
-			(submitLogin)="submitLogin()"
-		/>
+      <br>
+      <div class="separator"></div>
 
-		@if (errorMessage()) {
-			<p class="login-shell__feedback login-shell__feedback--error">{{ errorMessage() }}</p>
-		}
+      <app-google-sign-in-button (googleCredential)="handleGoogleLogin($event)" />
+    </div>
 
-		@if (successMessage()) {
-			<p class="login-shell__feedback login-shell__feedback--ok">{{ successMessage() }}</p>
-		}
-	</section>
+    @if (errorMessage()) {
+      <p class="login-shell__feedback login-shell__feedback--error">{{ errorMessage() }}</p>
+    }
+
+    @if (successMessage()) {
+      <p class="login-shell__feedback login-shell__feedback--ok">{{ successMessage() }}</p>
+    }
+  </section>
 </main>
 
 <app-public-footer />

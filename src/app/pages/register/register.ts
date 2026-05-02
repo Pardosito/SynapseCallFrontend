@@ -4,9 +4,10 @@ import { finalize, switchMap } from 'rxjs/operators';
 import { PublicFooter } from '../../layouts/public-footer/public-footer';
 import { PublicHeader } from '../../layouts/public-header/public-header';
 import { RegisterForm } from './register-form/register-form';
-import { GoogleSignInButton } from '../login/google-sign-in-button/google-sign-in-button';
 import { AuthFlowService } from '../../shared/services/auth-flow.service';
 import { Router } from '@angular/router';
+import { GooglePayload } from '../../shared/models/auth.models';
+import { GoogleSignInButton } from '../login/google-sign-in-button/google-sign-in-button';
 
 @Component({
   selector: 'app-register',
@@ -60,30 +61,6 @@ export class Register {
       });
   }
 
-  protected submitGoogleRegister(credential: string): void {
-    this.errorMessage.set('');
-    this.successMessage.set('');
-
-    this.isSubmitting.set(true);
-
-    this.authFlow
-      .googleLogin({ credential })
-      .pipe(
-        switchMap(() => this.authFlow.loadCurrentUser(true)),
-        finalize(() => this.isSubmitting.set(false))
-      )
-      .subscribe({
-        next: (user) => {
-          const label = user?.name || user?.email || 'tu cuenta';
-          this.successMessage.set(`Sesion iniciada para ${label}. Redirigiendo...`);
-          void this.router.navigate(['/dashboard']);
-        },
-        error: (error: unknown) => {
-          this.errorMessage.set(this.getErrorMessage(error));
-        },
-      });
-  }
-
   private getErrorMessage(error: unknown): string {
     if (error instanceof HttpErrorResponse) {
       if (typeof error.error === 'object' && error.error && 'message' in error.error) {
@@ -94,5 +71,38 @@ export class Register {
     }
 
     return 'No se pudo crear la cuenta.';
+  }
+
+  protected handleGoogleLogin(credential: string): void {
+    const decoded = this.decodeGoogleJwt(credential);
+    if (decoded) {
+      const payload: GooglePayload = {
+        googleId: decoded.sub,
+        email: decoded.email,
+        name: decoded.name
+      };
+
+      this.isSubmitting.set(true);
+      this.authFlow.googleLogin(payload)
+        .pipe(
+          switchMap(() => this.authFlow.loadCurrentUser()),
+          finalize(() => this.isSubmitting.set(false))
+        )
+        .subscribe({
+          next: () => this.router.navigate(['/dashboard']),
+          error: (error) => this.errorMessage.set(this.getErrorMessage(error))
+        });
+    }
+  }
+
+  private decodeGoogleJwt(token: string): any {
+    try {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      return JSON.parse(window.atob(base64));
+    } catch (e) {
+      console.error('Error decodificando token de Google', e);
+      return null;
+    }
   }
 }
