@@ -1,12 +1,18 @@
 .public-header {
-	align-items: center;
-	backdrop-filter: blur(8px);
 	background: linear-gradient(90deg, #0f172a 0%, #1d4ed8 100%);
 	color: #f8fafc;
+	width: 100%;
+}
+
+.public-header__content {
+	align-items: center;
 	display: flex;
 	gap: 1rem;
 	justify-content: space-between;
+	margin: 0 auto;
+	max-width: 1200px;
 	padding: 1rem 1.5rem;
+	width: 100%;
 }
 
 .brand {

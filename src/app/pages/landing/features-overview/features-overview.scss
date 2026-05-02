@@ -3,31 +3,34 @@
 	gap: 1rem;
 }
 
-.features__header p {
+.features__eyebrow {
 	color: #2563eb;
 	font-size: 0.85rem;
 	font-weight: 700;
+	letter-spacing: 0.03em;
 	margin: 0;
 	text-transform: uppercase;
 }
 
 .features__header h2 {
 	color: #0f172a;
-	font-size: clamp(1.2rem, 2.1vw, 1.8rem);
+	font-size: clamp(1.4rem, 2.3vw, 2rem);
+	line-height: 1.2;
 	margin: 0.35rem 0 0;
 }
 
 .features__grid {
 	display: grid;
 	gap: 1rem;
-	grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+	grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
 }
 
 .feature-card {
 	background-color: #ffffff;
 	border: 1px solid #e2e8f0;
 	border-radius: 0.8rem;
-	padding: 1rem;
+	box-shadow: 0 10px 25px rgb(15 23 42 / 0.05);
+	padding: 1.1rem;
 }
 
 .feature-card h3 {
@@ -39,5 +42,6 @@
 .feature-card p {
 	color: #475569;
 	font-size: 0.9rem;
+	line-height: 1.5;
 	margin: 0.5rem 0 0;
 }

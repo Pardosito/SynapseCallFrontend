@@ -61,6 +61,30 @@ export class Register {
       });
   }
 
+  protected submitGoogleRegister(credential: string): void {
+    this.errorMessage.set('');
+    this.successMessage.set('');
+
+    this.isSubmitting.set(true);
+
+    this.authFlow
+      .googleLogin({ credential } as any)
+      .pipe(
+        switchMap(() => this.authFlow.loadCurrentUser(true)),
+        finalize(() => this.isSubmitting.set(false))
+      )
+      .subscribe({
+        next: (user) => {
+          const label = user?.name || user?.email || 'tu cuenta';
+          this.successMessage.set(`Sesion iniciada para ${label}. Redirigiendo...`);
+          void this.router.navigate(['/dashboard']);
+        },
+        error: (error: unknown) => {
+          this.errorMessage.set(this.getErrorMessage(error));
+        },
+      });
+  }
+
   private getErrorMessage(error: unknown): string {
     if (error instanceof HttpErrorResponse) {
       if (typeof error.error === 'object' && error.error && 'message' in error.error) {

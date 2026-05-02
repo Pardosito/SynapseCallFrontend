@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, input, model, output } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-register-form',
@@ -18,7 +18,11 @@ export class RegisterForm {
   readonly errorMessage = input('');
   readonly submitRegister = output<void>();
 
-  protected submit(): void {
+  protected submit(form: NgForm): void {
+    if(form.invalid || this.disabled() || this.isLoading()){
+      form.control.markAllAsTouched();
+      return;
+    }
     this.submitRegister.emit();
   }
 }

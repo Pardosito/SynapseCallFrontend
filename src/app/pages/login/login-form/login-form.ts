@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, input, model, output } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-login-form',
@@ -16,7 +16,11 @@ export class LoginForm {
   readonly errorMessage = input('');
   readonly submitLogin = output<void>();
 
-  protected submit(): void {
+  protected submit(form: NgForm): void {
+    if(form.invalid || this.disabled() || this.isLoading()) {
+      form.control.markAllAsTouched();
+      return;
+    }
     this.submitLogin.emit();
   }
 }

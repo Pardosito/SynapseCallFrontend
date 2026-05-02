@@ -1,13 +1,13 @@
 <section class="features" aria-label="Resumen de funcionalidades">
 	<header class="features__header">
-		<p>Funciones principales</p>
-		<h2>Todo lo que tu equipo necesita para reuniones efectivas</h2>
+		<p class="features_eyebrow">Funciones principales</p>
+		<h2 id="features-title">Todo lo que tu equipo necesita para reuniones efectivas</h2>
 	</header>
 
 	<div class="features__grid">
-		@for (item of featureItems; track item.title) {
-			<article class="feature-card">
-				<h3>{{ item.title }}</h3>
+		@for (item of featureItems; track item.title; let index = $index) {
+			<article class="feature-card" [attr.aria-labelledby]="'feature-title-' + index">
+				<h3 [id]="'feature-title-' + index">{{ item.title }}</h3>
 				<p>{{ item.description }}</p>
 			</article>
 		}

@@ -1,10 +1,17 @@
 .public-footer {
 	background-color: #0b1220;
 	color: #cbd5e1;
+	width: 100%;
+}
+
+.public-footer__content {
 	display: grid;
-	gap: 1rem;
+	gap: 1.2rem;
 	grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+	margin: 0 auto;
+	max-width: 1200px;
 	padding: 1.5rem;
+	width: 100%;
 }
 
 .public-footer__column {
@@ -23,7 +30,8 @@
 .public-footer__column span,
 .public-footer__column a {
 	color: inherit;
-	font-size: 0.85rem;
+	font-size: 0.9rem;
+	line-height: 1.5;
 	margin: 0;
 	text-decoration: none;
 }
@@ -36,7 +44,7 @@
 
 .public-footer__copy {
 	border-top: 1px solid rgb(148 163 184 / 0.25);
-	font-size: 0.8rem;
+	font-size: 0.85rem;
 	grid-column: 1 / -1;
 	margin: 0;
 	padding-top: 0.9rem;
