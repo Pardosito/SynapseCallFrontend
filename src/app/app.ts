@@ -5,7 +5,7 @@ import { PublicHeader } from "./layouts/public-header/public-header";
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, PublicFooter, PublicHeader],
+  imports: [RouterOutlet],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
