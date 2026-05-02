@@ -8,8 +8,6 @@ import { ChatPanel } from './chat-panel/chat-panel';
 import { FileViewer } from './file-viewer/file-viewer';
 import { AgendaPanel } from './agenda-panel/agenda-panel';
 import { SignalingService } from '../../services/signaling.service';
-import { AuthFlowService } from '../../shared/services/auth-flow.service';
-
 @Component({
   selector: 'app-meeting-room',
   standalone: true,
@@ -23,21 +21,18 @@ export class MeetingRoom implements OnInit, OnDestroy {
   private router = inject(Router);
   private meetingService = inject(MeetingService);
   private signalingService = inject(SignalingService);
-  private authFlow = inject(AuthFlowService);
+
+  protected readonly isChatOpen = signal(false);
+  protected readonly isAgendaOpen = signal(false);
+  protected readonly isFileViewerOpen = signal(false);
+  protected readonly isMuted = signal(false);
+  protected readonly isCameraOff = signal(false);
 
   meetingId = signal<string | null>(null);
   meetingData = signal<IMeeting | null>(null);
   meetingConfig = signal<any>(null);
-
   isLoading = signal(true);
   errorMessage = signal<string | null>(null);
-
-  isChatOpen = signal(false);
-  isFileViewerOpen = signal(false);
-  isAgendaOpen = signal(false);
-
-  isMuted = signal(false);
-  isCameraOff = signal(false);
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
@@ -73,36 +68,30 @@ export class MeetingRoom implements OnInit, OnDestroy {
     });
   }
 
-  onToggleMute(): void {
+  protected onToggleMute(): void {
     this.isMuted.update(v => !v);
   }
 
-  onToggleCamera(): void {
+  protected onToggleCamera(): void {
     this.isCameraOff.update(v => !v);
   }
 
-  toggleChat(): void {
-    this.isChatOpen.update(val => !val);
-    if (this.isChatOpen()) {
-      this.isFileViewerOpen.set(false);
-      this.isAgendaOpen.set(false);
-    }
+  protected toggleChat(): void {
+    this.isAgendaOpen.set(false);
+    this.isFileViewerOpen.set(false);
+    this.isChatOpen.update(v => !v);
   }
 
-  toggleFileViewer(): void {
-    this.isFileViewerOpen.update(val => !val);
-    if (this.isFileViewerOpen()) {
-      this.isChatOpen.set(false);
-      this.isAgendaOpen.set(false);
-    }
+  protected toggleAgenda(): void {
+    this.isChatOpen.set(false);
+    this.isFileViewerOpen.set(false);
+    this.isAgendaOpen.update(v => !v);
   }
 
-  toggleAgenda(): void {
-    this.isAgendaOpen.update(val => !val);
-    if (this.isAgendaOpen()) {
-      this.isChatOpen.set(false);
-      this.isFileViewerOpen.set(false);
-    }
+  protected toggleFileViewer(): void {
+    this.isChatOpen.set(false);
+    this.isAgendaOpen.set(false);
+    this.isFileViewerOpen.update(v => !v);
   }
 
   leaveMeeting(): void {

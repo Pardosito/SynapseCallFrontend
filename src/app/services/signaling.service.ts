@@ -44,6 +44,32 @@ export class SignalingService implements OnDestroy {
     }
   }
 
+  sendMessage(message: string, userName: string): void {
+    if (this.socket) {
+      this.socket.emit('message', { message, userName });
+    }
+  }
+
+  onMessageReceived(): Observable<{userName: string, message: string}> {
+    return new Observable((observer) => {
+      this.socket?.on('message', (data) => observer.next(data));
+    });
+  }
+
+  startAgenda(meetingId: string, firstItemId: string): void {
+    this.socket?.emit('agenda-start', { meetingId, firstItemId });
+  }
+
+  nextAgendaItem(currentItemId: string, nextItemId: string): void {
+    this.socket?.emit('agenda-next', { currentItemId, nextItemId });
+  }
+
+  onAgendaUpdated(): Observable<any> {
+    return new Observable((observer) => {
+      this.socket?.on('agenda-update', (data) => observer.next(data));
+    });
+  }
+
   disconnect(): void {
     if (this.socket) {
       this.socket.disconnect();

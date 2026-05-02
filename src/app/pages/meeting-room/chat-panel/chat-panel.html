@@ -1,14 +1,34 @@
-<div class="chat-panel">
-  <div class="panel-header">
-    <h3>Chat</h3>
-    <button class="close-btn" (click)="closePanel.emit()" title="Cerrar">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16">
-        <line x1="18" y1="6" x2="6" y2="18"/>
-        <line x1="6" y1="6" x2="18" y2="18"/>
-      </svg>
-    </button>
+<div class="chat-container">
+  <div class="chat-header">
+    <h3>Chat de la reunión</h3>
+    <button class="close-btn" (click)="closePanel.emit()">✖</button>
   </div>
-  <div class="panel-body">
-    <p class="coming-soon">Chat próximamente...</p>
+
+  <div class="chat-messages-area" style="flex: 1; overflow-y: auto; padding: 1rem;">
+    @for (msg of messages(); track $index) {
+      <div
+        class="message-bubble"
+        [class.my-message]="msg.userName === userName()"
+        style="margin-bottom: 10px;"
+      >
+        <strong style="display: block; font-size: 0.8rem; color: gray;">
+          {{ msg.userName }}
+        </strong>
+        <span>{{ msg.message }}</span>
+      </div>
+    } @empty {
+      <p style="text-align: center; color: gray;">Aún no hay mensajes.</p>
+    }
+  </div>
+
+  <div class="chat-input-area" style="display: flex; gap: 5px; padding: 1rem;">
+    <input
+      type="text"
+      [(ngModel)]="newMessage"
+      (keyup.enter)="send()"
+      placeholder="Escribe un mensaje..."
+      style="flex: 1;"
+    />
+    <button class="sc-btn sc-btn-primary" (click)="send()">Enviar</button>
   </div>
 </div>
