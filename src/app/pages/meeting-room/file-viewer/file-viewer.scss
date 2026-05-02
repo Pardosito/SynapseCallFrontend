@@ -1,0 +1,52 @@
+.file-viewer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  color: #f1f5f9;
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  flex-shrink: 0;
+
+  h3 {
+    margin: 0;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #f1f5f9;
+    letter-spacing: 0.02em;
+  }
+
+  .close-btn {
+    background: none;
+    border: none;
+    color: #64748b;
+    cursor: pointer;
+    padding: 0.3rem;
+    border-radius: 6px;
+    display: flex;
+    transition: background 0.15s, color 0.15s;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.07);
+      color: #f1f5f9;
+    }
+  }
+}
+
+.panel-body {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.coming-soon {
+  font-size: 0.83rem;
+  color: #475569;
+  margin: 0;
+}

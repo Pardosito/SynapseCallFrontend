@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MeetingService } from '../../services/meeting.service';
 import { IMeeting } from '../../shared/models/meeting.model';
@@ -6,18 +6,19 @@ import { VideoGrid } from './video-grid/video-grid';
 import { MediaControls } from './media-controls/media-controls';
 import { ChatPanel } from './chat-panel/chat-panel';
 import { FileViewer } from './file-viewer/file-viewer';
+import { AgendaPanel } from './agenda-panel/agenda-panel';
 import { SignalingService } from '../../services/signaling.service';
 import { AuthFlowService } from '../../shared/services/auth-flow.service';
 
 @Component({
   selector: 'app-meeting-room',
   standalone: true,
-  imports: [VideoGrid, MediaControls, ChatPanel, FileViewer],
+  imports: [VideoGrid, MediaControls, ChatPanel, FileViewer, AgendaPanel],
   templateUrl: './meeting-room.html',
   styleUrl: './meeting-room.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MeetingRoom implements OnInit {
+export class MeetingRoom implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private meetingService = inject(MeetingService);
@@ -33,6 +34,10 @@ export class MeetingRoom implements OnInit {
 
   isChatOpen = signal(false);
   isFileViewerOpen = signal(false);
+  isAgendaOpen = signal(false);
+
+  isMuted = signal(false);
+  isCameraOff = signal(false);
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
@@ -51,16 +56,14 @@ export class MeetingRoom implements OnInit {
       next: (data: any) => {
         this.meetingData.set(data.meeting);
         this.meetingConfig.set(data.config);
-
         this.isLoading.set(false);
 
         this.signalingService.connect();
-
         const myUserName = data.config.userName || 'Usuario';
         this.signalingService.joinRoom(id, myUserName);
 
         this.signalingService.onUserJoined().subscribe((newUserId) => {
-           console.log('Preparando video para:', newUserId);
+          console.log('Preparando video para:', newUserId);
         });
       },
       error: (err) => {
@@ -70,17 +73,39 @@ export class MeetingRoom implements OnInit {
     });
   }
 
-  toggleChat() {
+  onToggleMute(): void {
+    this.isMuted.update(v => !v);
+  }
+
+  onToggleCamera(): void {
+    this.isCameraOff.update(v => !v);
+  }
+
+  toggleChat(): void {
     this.isChatOpen.update(val => !val);
-    if (this.isChatOpen()) this.isFileViewerOpen.set(false);
+    if (this.isChatOpen()) {
+      this.isFileViewerOpen.set(false);
+      this.isAgendaOpen.set(false);
+    }
   }
 
-  toggleFileViewer() {
+  toggleFileViewer(): void {
     this.isFileViewerOpen.update(val => !val);
-    if (this.isFileViewerOpen()) this.isChatOpen.set(false);
+    if (this.isFileViewerOpen()) {
+      this.isChatOpen.set(false);
+      this.isAgendaOpen.set(false);
+    }
   }
 
-  leaveMeeting() {
+  toggleAgenda(): void {
+    this.isAgendaOpen.update(val => !val);
+    if (this.isAgendaOpen()) {
+      this.isChatOpen.set(false);
+      this.isFileViewerOpen.set(false);
+    }
+  }
+
+  leaveMeeting(): void {
     this.signalingService.disconnect();
     this.router.navigate(['/dashboard']);
   }

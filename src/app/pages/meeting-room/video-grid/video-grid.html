@@ -1,6 +1,6 @@
 <div class="video-grid-container">
 
-  <div class="video-wrapper my-video">
+  <div class="video-wrapper my-video" [class.camera-off]="isCameraOff()">
     <video
       #myVideoElement
       autoplay
@@ -8,7 +8,24 @@
       playsinline>
     </video>
 
-    <div class="user-label">Tú</div>
+    <div class="avatar-placeholder">
+      <div class="avatar-circle">
+        <svg viewBox="0 0 24 24" fill="currentColor" width="36" height="36">
+          <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="user-label">
+      @if (isMuted()) {
+        <svg class="mute-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="11" height="11">
+          <line x1="1" y1="1" x2="23" y2="23"/>
+          <path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6"/>
+          <path d="M17 16.95A7 7 0 0 1 5 12v-2"/>
+        </svg>
+      }
+      Tú
+    </div>
   </div>
 
-  </div>
+</div>
