@@ -2,12 +2,18 @@
 
   @if (isLoading()) {
     <div class="loading-screen">
-      <h2>Entrando a la sala...</h2>
+      <div class="spinner"></div>
+      <p>Entrando a la sala...</p>
     </div>
   }
 
   @if (errorMessage()) {
     <div class="error-screen">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="48" height="48" class="error-icon">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="12" y1="8" x2="12" y2="12"/>
+        <line x1="12" y1="16" x2="12.01" y2="16"/>
+      </svg>
       <h2>{{ errorMessage() }}</h2>
       <button class="sc-btn sc-btn-primary" (click)="leaveMeeting()">Volver al Dashboard</button>
     </div>
@@ -16,17 +22,33 @@
   @if (!isLoading() && meetingData()) {
 
     <header class="room-header">
-      <h2>{{ meetingData()?.title || 'Reunión sin título' }}</h2>
+      <div class="room-header__info">
+        <div class="room-indicator"></div>
+        <h2>{{ meetingData()?.title || 'Reunión sin título' }}</h2>
+      </div>
+      <div class="room-header__meta">
+        <span class="live-badge">EN VIVO</span>
+      </div>
     </header>
 
     <main class="room-main-layout">
       <div class="video-area">
-        <app-video-grid />
+        <app-video-grid [isMuted]="isMuted()" [isCameraOff]="isCameraOff()" />
       </div>
 
       @if (isChatOpen()) {
         <aside class="side-panel">
           <app-chat-panel (closePanel)="toggleChat()" />
+        </aside>
+      }
+
+      @if (isAgendaOpen()) {
+        <aside class="side-panel">
+          <app-agenda-panel
+            [meetingId]="meetingId()!"
+            [isHost]="meetingConfig()?.isHost ?? false"
+            (closePanel)="toggleAgenda()"
+          />
         </aside>
       }
 
@@ -39,11 +61,19 @@
 
     <footer class="room-controls">
       <app-media-controls
+        [isMuted]="isMuted()"
+        [isCameraOff]="isCameraOff()"
+        [isChatOpen]="isChatOpen()"
+        [isAgendaOpen]="isAgendaOpen()"
+        (toggleMuteEvent)="onToggleMute()"
+        (toggleCameraEvent)="onToggleCamera()"
         (toggleChatEvent)="toggleChat()"
+        (toggleAgendaEvent)="toggleAgenda()"
         (toggleFilesEvent)="toggleFileViewer()"
         (leaveMeetingEvent)="leaveMeeting()"
       />
     </footer>
 
   }
+
 </div>

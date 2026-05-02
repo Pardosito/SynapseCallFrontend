@@ -1,0 +1,125 @@
+<div class="agenda-panel">
+
+  <!-- Header -->
+  <div class="panel-header">
+    <h3>Agenda</h3>
+    <button class="close-btn" (click)="closePanel.emit()" title="Cerrar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16">
+        <line x1="18" y1="6" x2="6" y2="18"/>
+        <line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Active item card with timer -->
+  @if (activeItem()) {
+    <div class="active-card">
+      <div class="active-badge">
+        <span class="pulse-dot"></span>
+        En curso
+      </div>
+      <div class="active-topic">{{ activeItem()?.topic }}</div>
+      <div class="timer" [class.timer--warning]="timerClass === 'timer--warning'" [class.timer--danger]="timerClass === 'timer--danger'">{{ formattedTime }}</div>
+      <div class="timer-label">restantes de {{ activeItem()?.durationInMinutes }} min</div>
+    </div>
+  }
+
+  @if (isFinished()) {
+    <div class="finished-banner">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+        <polyline points="20 6 9 17 4 12"/>
+      </svg>
+      Agenda completada
+    </div>
+  }
+
+  <!-- Items list -->
+  <div class="items-list">
+    @for (item of items(); track itemId(item)) {
+      <div class="agenda-item" [class]="'agenda-item--' + item.status">
+        <div class="item-order">{{ item.order }}</div>
+        <div class="item-body">
+          <span class="item-topic">{{ item.topic }}</span>
+          <span class="item-meta">{{ item.durationInMinutes }} min</span>
+        </div>
+        <div class="item-indicator">
+          @if (item.status === 'active') {
+            <span class="dot dot--active"></span>
+          } @else if (item.status === 'completed') {
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14" class="check-icon">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          }
+        </div>
+      </div>
+    }
+
+    @if (items().length === 0) {
+      <div class="empty-state">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="32" height="32">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+          <line x1="16" y1="2" x2="16" y2="6"/>
+          <line x1="8" y1="2" x2="8" y2="6"/>
+          <line x1="3" y1="10" x2="21" y2="10"/>
+        </svg>
+        <p>No hay temas en la agenda.</p>
+      </div>
+    }
+  </div>
+
+  <!-- Add item -->
+  @if (showAddForm()) {
+    <div class="add-form">
+      <input
+        [(ngModel)]="newTopic"
+        placeholder="Nombre del tema"
+        class="form-input"
+        (keydown.enter)="addItem()"
+        autofocus
+      />
+      <div class="form-row">
+        <input
+          type="number"
+          [(ngModel)]="newDuration"
+          min="1"
+          max="120"
+          class="form-input form-input--narrow"
+        />
+        <span class="form-unit">minutos</span>
+      </div>
+      <div class="form-actions">
+        <button class="btn-ghost" (click)="showAddForm.set(false)">Cancelar</button>
+        <button class="btn-primary" (click)="addItem()" [disabled]="isAdding() || !newTopic.trim()">
+          {{ isAdding() ? 'Agregando...' : 'Agregar' }}
+        </button>
+      </div>
+    </div>
+  } @else {
+    <button class="add-item-btn" (click)="showAddForm.set(true)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14">
+        <line x1="12" y1="5" x2="12" y2="19"/>
+        <line x1="5" y1="12" x2="19" y2="12"/>
+      </svg>
+      Agregar tema
+    </button>
+  }
+
+  <!-- Host controls -->
+  @if (isHost()) {
+    <div class="host-controls">
+      @if (!activeItem()) {
+        <button
+          class="btn-primary btn-full"
+          (click)="startAgenda()"
+          [disabled]="items().length === 0 || isFinished()"
+        >
+          Iniciar agenda
+        </button>
+      } @else {
+        <button class="btn-secondary" (click)="nextItem()">Siguiente</button>
+        <button class="btn-stop" (click)="stopAgenda()">Detener</button>
+      }
+    </div>
+  }
+
+</div>

@@ -1,16 +1,15 @@
 import { Injectable, inject, signal, OnDestroy } from '@angular/core';
 import { io, Socket } from 'socket.io-client';
-import { Observable, Subject } from 'rxjs';
+import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment.development';
 import { AuthFlowService } from '../shared/services/auth-flow.service';
-import { LocalStorageService } from '../shared/services/local-storage.service';
+import { IAgendaItem } from '../shared/models/agenda-item.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SignalingService implements OnDestroy {
   private socket: Socket | null = null;
-  private storageService = inject(LocalStorageService);
 
   private socketUrl = new URL(environment.apiUrl).origin;
   private authFlow = inject(AuthFlowService);
@@ -58,6 +57,38 @@ export class SignalingService implements OnDestroy {
         console.log(`El usuario ${userId} acaba de entrar a la sala.`);
         observer.next(userId);
       });
+    });
+  }
+
+  // --- Agenda real-time ---
+
+  emitAgendaStart(meetingId: string, firstItemId: string): void {
+    this.socket?.emit('agenda-start', { meetingId, firstItemId });
+  }
+
+  emitAgendaNext(currentItemId: string, nextItemId: string): void {
+    this.socket?.emit('agenda-next', { currentItemId, nextItemId });
+  }
+
+  emitAgendaStop(currentItemId: string): void {
+    this.socket?.emit('agenda-stop', { currentItemId });
+  }
+
+  onAgendaUpdate(): Observable<{ currentItem: IAgendaItem; startTime: string; duration: number }> {
+    return new Observable((observer) => {
+      this.socket?.on('agenda-update', (data) => observer.next(data));
+    });
+  }
+
+  onAgendaFinished(): Observable<void> {
+    return new Observable((observer) => {
+      this.socket?.on('agenda-finished', () => observer.next());
+    });
+  }
+
+  onAgendaStopped(): Observable<void> {
+    return new Observable((observer) => {
+      this.socket?.on('agenda-stopped', () => observer.next());
     });
   }
 

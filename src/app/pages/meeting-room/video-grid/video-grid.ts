@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ElementRef, OnInit, ViewChild, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, OnInit, ViewChild, effect, input, signal } from '@angular/core';
 
 @Component({
   selector: 'app-video-grid',
@@ -10,7 +10,22 @@ import { ChangeDetectionStrategy, Component, ElementRef, OnInit, ViewChild, sign
 export class VideoGrid implements OnInit {
   @ViewChild('myVideoElement', { static: true }) myVideo!: ElementRef<HTMLVideoElement>;
 
+  isMuted = input<boolean>(false);
+  isCameraOff = input<boolean>(false);
+
   myStream = signal<MediaStream | null>(null);
+
+  constructor() {
+    effect(() => {
+      const muted = this.isMuted();
+      this.myStream()?.getAudioTracks().forEach(t => t.enabled = !muted);
+    });
+
+    effect(() => {
+      const off = this.isCameraOff();
+      this.myStream()?.getVideoTracks().forEach(t => t.enabled = !off);
+    });
+  }
 
   ngOnInit(): void {
     this.startMyVideo();
@@ -25,10 +40,9 @@ export class VideoGrid implements OnInit {
 
       this.myStream.set(stream);
 
-      if (this.myVideo && this.myVideo.nativeElement) {
+      if (this.myVideo?.nativeElement) {
         this.myVideo.nativeElement.srcObject = stream;
       }
-
     } catch (error) {
       console.error('Error al acceder a la cámara/micrófono:', error);
     }

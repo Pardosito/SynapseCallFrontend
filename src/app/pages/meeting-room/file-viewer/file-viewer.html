@@ -1,1 +1,14 @@
-<p>file-viewer works!</p>
+<div class="file-viewer">
+  <div class="panel-header">
+    <h3>Archivos</h3>
+    <button class="close-btn" (click)="closePanel.emit()" title="Cerrar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16">
+        <line x1="18" y1="6" x2="6" y2="18"/>
+        <line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+  </div>
+  <div class="panel-body">
+    <p class="coming-soon">Archivos próximamente...</p>
+  </div>
+</div>
