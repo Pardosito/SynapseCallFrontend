@@ -8,10 +8,23 @@
 		</p>
 
 		<div class="hero__actions" aria-label="Acciones principales">
-			<a class="hero__button hero__button--primary" routerLink="/register">
-				Comenzar gratis</a>
-			<a class="hero__button hero__button--ghost" routerLink="/login">
-				Ya tengo cuenta</a>
+			@if (!authFlow.isAuthenticated()) {
+				<a class="hero__button hero__button--primary" routerLink="/register">
+					Comenzar gratis
+				</a>
+
+				<a class="hero__button hero__button--ghost" routerLink="/login">
+					Ya tengo cuenta
+				</a>
+			} @else {
+				<a class="hero__button hero__button--primary" routerLink="/dashboard">
+					Ir a mis llamadas
+				</a>
+
+				<a class="hero__button hero__button--ghost" routerLink="/dashboard">
+					Panel de reuniones
+				</a>
+			}
 		</div>
 
 		<ul class="hero__benefits" aria-label="Beneficios principales">

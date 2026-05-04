@@ -1,11 +1,15 @@
 <footer class="dashboard-footer" role="contentinfo">
-	<div class="dashboard-footer__status">
-		<span>Sincronizacion activa</span>
-		<span>Version 1.0.0</span>
-	</div>
+	<div class="dashboard-footer__content">
+		<section class="dashboard-footer__group" aria-labelledby="dashboard-footer-status">
+			<h2 id="dashboard-footer-status">Estado del sistema</h2>
+			<span>Sincronizacion activa</span>
+			<span>Version 1.0.0</span>
+		</section>
 
-	<div class="dashboard-footer__help">
-		<span>Ayuda: soporte@synapsecall.com</span>
-		<span>{{ currentYear }} SynapseCall</span>
+		<section class="dashboard-footer__group" aria-labelledby="dashboard-footer-help">
+			<h2 id="dashboard-footer-help">Soporte</h2>
+			<a href="mailto:soporte@synapsecall.com">soporte@synapsecall.com</a>
+			<span>{{ currentYear }} SynapseCall</span>
+		</section>
 	</div>
 </footer>

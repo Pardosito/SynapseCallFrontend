@@ -1,36 +1,125 @@
 .dashboard-header {
+	background: linear-gradient(90deg, #0f172a 0%, #1d4ed8 100%);
+	color: #f8fafc;
+	width: 100%;
+}
+
+.dashboard-header__content {
 	align-items: center;
-	background: linear-gradient(90deg, #f8fafc 0%, #dbeafe 100%);
-	border-bottom: 1px solid #cbd5e1;
 	display: flex;
-	gap: 1rem;
+	gap: 1.5rem;
 	justify-content: space-between;
-	padding: 1rem 1.25rem;
+	margin: 0 auto;
+	max-width: 1200px;
+	padding: 1rem 1.5rem;
+	width: 100%;
 }
 
 .dashboard-header__title-group {
 	display: flex;
 	flex-direction: column;
-	gap: 0.25rem;
+	gap: 0.2rem;
+}
+
+.dashboard-header__brand {
+	font-size: 0.85rem;
+	font-weight: 700;
+	letter-spacing: 0.04em;
+	opacity: 0.9;
+	text-transform: uppercase;
 }
 
 .dashboard-header__title-group h1 {
-	color: #0f172a;
-	font-size: 1.1rem;
+	color: #f8fafc;
+	font-size: 1.15rem;
 	margin: 0;
 }
 
 .dashboard-header__title-group p {
-	color: #334155;
+	color: #dbeafe;
 	font-size: 0.88rem;
+	line-height: 1.4;
 	margin: 0;
 }
 
-.dashboard-header__meta {
-	color: #1e293b;
+.dashboard-header__right {
+	align-items: flex-end;
 	display: flex;
 	flex-direction: column;
+	gap: 0.6rem;
+}
+
+.dashboard-nav {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.75rem;
+	justify-content: flex-end;
+}
+
+.dashboard-nav__link {
+	border-radius: 999px;
+	color: #f8fafc;
+	font-size: 0.9rem;
+	padding: 0.35rem 0.75rem;
+	text-decoration: none;
+}
+
+.dashboard-nav__link:hover,
+.dashboard-nav__link:focus-visible {
+	background-color: rgb(248 250 252 / 0.2);
+	outline: none;
+}
+
+.dashboard-nav__user {
+	background-color: rgb(248 250 252 / 0.14);
+	border-radius: 999px;
+	color: #f8fafc;
 	font-size: 0.85rem;
-	gap: 0.2rem;
-	text-align: right;
+	max-width: 220px;
+	overflow: hidden;
+	padding: 0.35rem 0.75rem;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.dashboard-nav__button {
+	background: transparent;
+	border: 1px solid rgb(248 250 252 / 0.45);
+	cursor: pointer;
+	font-family: inherit;
+}
+
+.dashboard-header__meta {
+	color: #dbeafe;
+	display: flex;
+	flex-wrap: wrap;
+	font-size: 0.8rem;
+	gap: 0.4rem;
+	justify-content: flex-end;
+}
+
+.dashboard-header__meta span {
+	background-color: rgb(248 250 252 / 0.12);
+	border-radius: 999px;
+	padding: 0.25rem 0.65rem;
+}
+
+@media (max-width: 760px) {
+	.dashboard-header__content {
+		align-items: flex-start;
+		flex-direction: column;
+	}
+
+	.dashboard-header__right {
+		align-items: flex-start;
+		width: 100%;
+	}
+
+	.dashboard-nav {
+		justify-content: flex-start;
+	}
+
+	.dashboard-header__meta {
+		justify-content: flex-start;
+	}
 }

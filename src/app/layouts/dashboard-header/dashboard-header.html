@@ -1,11 +1,28 @@
 <header class="dashboard-header" role="banner">
-	<div class="dashboard-header__title-group">
-		<h1>Panel de reuniones</h1>
-		<p>Organiza, crea y administra tus sesiones en un solo lugar.</p>
-	</div>
+	<div class="dashboard-header__content">
+		<div class="dashboard-header__title-group" aria-labelledby="dashboard-title">
+			<span class="dashboard-header__brand">SynapseCall</span>
+			<h1 id="dashboard-title">Panel de reuniones</h1>
+			<p>Organiza, crea y administra tus sesiones en un solo lugar.</p>
+		</div>
 
-	<div class="dashboard-header__meta" aria-label="Resumen rapido">
-		<span>Hoy: {{ currentDate }}</span>
-		<span>Estado: En linea</span>
+		<div class="dashboard-header__right">
+			<nav class="dashboard-nav" aria-label="Navegacion del panel">
+				<a class="dashboard-nav__link" routerLink="/">Inicio</a>
+
+				<span class="dashboard-nav__user">
+					{{ authFlow.currentUser()?.name || authFlow.currentUser()?.email }}
+				</span>
+
+				<button class="dashboard-nav__link dashboard-nav__button" type="button" (click)="onLogout()">
+					Cerrar sesion
+				</button>
+			</nav>
+
+			<div class="dashboard-header__meta" aria-label="Resumen rapido del panel">
+				<span>Hoy: {{ currentDate }}</span>
+				<span>Estado: En linea</span>
+			</div>
+		</div>
 	</div>
 </header>

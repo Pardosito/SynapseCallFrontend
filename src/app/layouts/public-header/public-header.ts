@@ -16,7 +16,8 @@ export class PublicHeader {
   ) {}
 
   protected onLogout(): void {
-    this.authFlow.logout();
-    void this.router.navigateByUrl('/');
+    this.authFlow.logout().subscribe({
+      next: () => void this.router.navigateByUrl('/'),
+    });
   }
 }
