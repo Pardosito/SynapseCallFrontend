@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { catchError, finalize, of } from 'rxjs';
 import { PublicHeader } from '../../layouts/public-header/public-header';
@@ -13,6 +13,7 @@ import { AuthFlowService } from '../../shared/services/auth-flow.service';
   templateUrl: './landing.html',
   styleUrl: './landing.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class Landing implements OnInit {
   protected readonly isLoadingProfile = signal(false);
