@@ -22,11 +22,14 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(clonedRequest).pipe(
     catchError((error: HttpErrorResponse) => {
-      if (error.status === 401 && !req.url.includes('/auth/logout')) {
-        void authFlowService.logout().subscribe();
+      const isLogoutRequest = req.url.includes('/auth/logout');
 
-        router.navigate(['/login']);
+      if (error.status === 401 && token && !isLogoutRequest) {
+        authFlowService.logout().subscribe({
+          complete: () => void router.navigate(['/login']),
+        });
       }
+
       return throwError(() => error);
     })
   );

@@ -49,8 +49,9 @@
 	}
 
 	<div class="register-form__row">
-		<label>
-			<span>Contrasena</span>
+		<div class="register-form__field">
+			<label>
+			<span>Contraseña</span>
 			<input
 				#passwordCtrl="ngModel"
 				type="password"
@@ -62,23 +63,28 @@
 				[ngModel]="password()"
 				(ngModelChange)="password.set($event)"
 			/>
-		</label>
-		@if (passwordCtrl.invalid && passwordCtrl.touched) {
-			<span class="error">
+			</label>
+
+			<div class="register-form__error-slot">
+			@if (passwordCtrl.invalid && passwordCtrl.touched) {
+				<span class="error">
 				@if(passwordCtrl.errors?.['required']) {
-					Ingresar una contraseña es obligatoria
+					Ingresar una contraseña es obligatorio
 				}
 				@if(passwordCtrl.errors?.['minlength']){
 					La contraseña debe tener al menos 8 caracteres
 				}
 				@if(passwordCtrl.errors?.['pattern']){
-					La contraseña debe tener al menos una mayuscula
+					La contraseña debe tener al menos una mayúscula
 				}
-			</span>
-		}
+				</span>
+			}
+			</div>
+		</div>
 
-		<label>
-			<span>Confirmar contrasena</span>
+		<div class="register-form__field">
+			<label>
+			<span>Confirmar contraseña</span>
 			<input
 				#confirmPasswordCtrl="ngModel"
 				type="password"
@@ -88,20 +94,23 @@
 				[ngModel]="confirmPassword()"
 				(ngModelChange)="confirmPassword.set($event)"
 			/>
-		</label>
-		@if(confirmPasswordCtrl.invalid && confirmPasswordCtrl.touched){
-			<span class="error">
-				@if(passwordCtrl.errors?.['required']) {
+			</label>
+
+			<div class="register-form__error-slot">
+			@if(confirmPasswordCtrl.invalid && confirmPasswordCtrl.touched){
+				<span class="error">
+				@if(confirmPasswordCtrl.errors?.['required']) {
 					Confirmar tu contraseña es obligatorio
 				}
-			</span>
-		}
+				</span>
+			}
+
+			@if (confirmPasswordCtrl.touched && confirmPassword() && password() !== confirmPassword()){
+				<span class="error">Las contraseñas no coinciden</span>
+			}
+			</div>
+		</div>
 	</div>
-
-
-	@if (password() !== confirmPassword() ){
-		<span class="error">Las contraseñas no coinciden</span>
-	}
 
 	<button type="submit" [disabled]="disabled() || isLoading() || registerNgForm.invalid || password() !== confirmPassword()">Crear cuenta</button>
 

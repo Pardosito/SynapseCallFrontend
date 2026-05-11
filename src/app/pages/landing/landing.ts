@@ -21,10 +21,20 @@ export class Landing implements OnInit {
   public constructor(protected readonly authFlow: AuthFlowService) {}
 
   public ngOnInit(): void {
-    this.loadProfile();
+    if (this.authFlow.isAuthenticated()) {
+      this.loadProfile();
+      return;
+    }
+
+    this.feedback.set('Estás navegando en el inicio público. Inicia sesión o crea una cuenta para acceder al dashboard.');
   }
 
   protected loadProfile(force = false): void {
+    if (!this.authFlow.isAuthenticated()) {
+      this.feedback.set('No hay sesión activa. Inicia sesión o crea una cuenta para cargar tu perfil.');
+      return;
+    }
+
     this.isLoadingProfile.set(true);
     this.feedback.set('');
 
