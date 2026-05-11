@@ -5,6 +5,7 @@ import { MeetingList } from './meeting-list/meeting-list';
 import { CreateJoinMeetingInput } from './create-join-meeting-input/create-join-meeting-input';
 import { CreateMeetingModal } from './create-meeting-modal/create-meeting-modal';
 import { AuthFlowService } from '../../shared/services/auth-flow.service';
+import { IMeeting } from '../../shared/models/meeting.model';
 
 @Component({
   selector: 'app-dashboard',
@@ -24,20 +25,28 @@ export class Dashboard {
   private authFlowService = inject(AuthFlowService);
 
   isModalOpen = signal(false);
+  meetingToEdit = signal<IMeeting | null>(null);
   reloadCounter = signal(0);
 
   userIsLoggedIn = this.authFlowService.isAuthenticated;
 
-  openCreateModal() {
+ openCreateModal() {
+  this.meetingToEdit.set(null);
+  this.isModalOpen.set(true);
+  }
+
+  openEditModal(meeting: IMeeting) {
+    this.meetingToEdit.set(meeting);
     this.isModalOpen.set(true);
   }
 
-  closeCreateModal() {
+  closeMeetingModal() {
     this.isModalOpen.set(false);
+    this.meetingToEdit.set(null);
   }
 
-  onMeetingCreated() {
-    this.closeCreateModal();
+  onMeetingSaved() {
+    this.closeMeetingModal();
     this.reloadCounter.update(v => v + 1);
   }
 }

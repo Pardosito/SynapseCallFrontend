@@ -150,6 +150,18 @@
     &:hover { border-color: #94a3b8; color: #0f172a; }
   }
 
+  &--danger {
+    background: transparent;
+    border-color: #fecaca;
+    color: #dc2626;
+
+  &:hover {
+    background: #fee2e2;
+    border-color: #fca5a5;
+  }
+}
+
+
   &--sm {
     padding: 0.4rem 0.75rem;
     font-size: 0.8rem;

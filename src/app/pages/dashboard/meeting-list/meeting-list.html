@@ -50,10 +50,9 @@
             </p>
 
             <div class="meeting-card__actions">
-              <button class="btn btn--ghost btn--sm">Editar</button>
-              <button class="btn btn--primary btn--sm" (click)="joinMeeting(meeting._id)">
-                Unirse
-              </button>
+              <button class="btn btn--ghost btn--sm" (click)="editMeeting(meeting)">Editar</button>
+              <button class="btn btn--danger btn--sm" (click)="deleteMeeting(meeting._id)">Eliminar</button>
+              <button class="btn btn--primary btn--sm" (click)="joinMeeting(meeting._id)">Unirse</button>
             </div>
           </div>
         }

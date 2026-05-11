@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, effect, inject, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, input, output, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { MeetingService } from '../../../services/meeting.service';
 import { IMeeting } from '../../../shared/models/meeting.model';
@@ -17,6 +17,7 @@ export class MeetingList {
   private router = inject(Router);
 
   readonly reloadTrigger = input(0);
+  readonly editMeetingSelected = output<IMeeting>();
 
   meetings = signal<IMeeting[]>([]);
   isLoading = signal(true);
@@ -40,6 +41,28 @@ export class MeetingList {
       },
       error: () => {
         this.errorMessage.set('No se pudieron cargar las reuniones.');
+        this.isLoading.set(false);
+      }
+    });
+  }
+
+  editMeeting(meeting: IMeeting): void {
+    this.editMeetingSelected.emit(meeting);
+  }
+
+  deleteMeeting(meetingId: string | undefined): void {
+    if (!meetingId) return;
+
+    const confirmed = window.confirm('¿Seguro que quieres eliminar esta reunión?');
+    if (!confirmed) return;
+
+    this.isLoading.set(true);
+    this.errorMessage.set(null);
+
+    this.meetingService.deleteMeeting(meetingId).subscribe({
+      next: () => this.loadMeetings(),
+      error: (err) => {
+        this.errorMessage.set(err.error?.message || 'No se pudo eliminar la reunión.');
         this.isLoading.set(false);
       }
     });

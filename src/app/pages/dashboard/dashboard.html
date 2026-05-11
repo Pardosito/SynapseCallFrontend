@@ -10,7 +10,10 @@
 
       <app-create-join-meeting-input (createMeeting)="openCreateModal()" />
 
-      <app-meeting-list [reloadTrigger]="reloadCounter()" />
+      <app-meeting-list
+        [reloadTrigger]="reloadCounter()"
+        (editMeetingSelected)="openEditModal($event)"
+      />
     </main>
   } @else {
     <main class="dashboard-content loading-state">
@@ -23,8 +26,9 @@
   @if (isModalOpen()) {
     <div class="modal-overlay">
       <app-create-meeting-modal
-        (close)="closeCreateModal()"
-        (meetingCreated)="onMeetingCreated()"
+        [meetingToEdit]="meetingToEdit()"
+        (close)="closeMeetingModal()"
+        (meetingSaved)="onMeetingSaved()"
       />
     </div>
   }
