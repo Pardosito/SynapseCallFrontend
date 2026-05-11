@@ -9,6 +9,10 @@
 
     <div class="register-box">
       <app-register-form
+        [(name)]="registerName"
+        [(email)]="registerEmail"
+        [(password)]="registerPassword"
+        [(confirmPassword)]="registerPasswordConfirm"
         [isLoading]="isSubmitting()"
         [errorMessage]="errorMessage()"
         (submitRegister)="submitRegister()"
