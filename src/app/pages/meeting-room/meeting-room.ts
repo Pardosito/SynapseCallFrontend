@@ -3,8 +3,10 @@ import {
   inject, OnDestroy, OnInit, signal,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { MeetingService } from '../../services/meeting.service';
 import { IMeeting } from '../../shared/models/meeting.model';
+import { ChatMessage } from '../../shared/models/chat-message.model';
 import { VideoGrid } from './video-grid/video-grid';
 import { MediaControls } from './media-controls/media-controls';
 import { ChatPanel } from './chat-panel/chat-panel';
@@ -33,12 +35,16 @@ export class MeetingRoom implements OnInit, OnDestroy {
   protected readonly isFileViewerOpen = signal(false);
   protected readonly isMuted          = signal(false);
   protected readonly isCameraOff      = signal(false);
+  protected readonly chatMessages     = signal<ChatMessage[]>([]);
+  protected readonly unreadCount      = signal(0);
 
-  meetingId    = signal<string | null>(null);
-  meetingData  = signal<IMeeting | null>(null);
+  meetingId     = signal<string | null>(null);
+  meetingData   = signal<IMeeting | null>(null);
   meetingConfig = signal<any>(null);
-  isLoading    = signal(true);
-  errorMessage = signal<string | null>(null);
+  isLoading     = signal(true);
+  errorMessage  = signal<string | null>(null);
+
+  private chatSubs: Subscription[] = [];
 
   readonly userName = computed(() => {
     const configName = this.meetingConfig()?.userName;
@@ -67,12 +73,29 @@ export class MeetingRoom implements OnInit, OnDestroy {
 
         this.signalingService.connect();
         this.signalingService.joinRoom(id, this.userName());
+        this.subscribeToChat();
       },
       error: (err) => {
         this.errorMessage.set(err.error?.message || 'La reunión no existe o no tienes acceso.');
         this.isLoading.set(false);
       }
     });
+  }
+
+  private subscribeToChat(): void {
+    this.chatSubs.push(
+      this.signalingService.onMessageReceived().subscribe(msg => {
+        this.chatMessages.update(prev => [...prev, msg]);
+        if (!this.isChatOpen()) this.unreadCount.update(n => n + 1);
+      }),
+      this.signalingService.onFileUploaded().subscribe(file => {
+        const card: ChatMessage = {
+          userName: '', message: '', sentAt: new Date().toISOString(), socketId: '', fileEntry: file,
+        };
+        this.chatMessages.update(prev => [...prev, card]);
+        if (!this.isChatOpen()) this.unreadCount.update(n => n + 1);
+      }),
+    );
   }
 
   protected onToggleMute(): void   { this.isMuted.update(v => !v); }
@@ -82,6 +105,7 @@ export class MeetingRoom implements OnInit, OnDestroy {
     this.isAgendaOpen.set(false);
     this.isFileViewerOpen.set(false);
     this.isChatOpen.update(v => !v);
+    if (this.isChatOpen()) this.unreadCount.set(0);
   }
 
   protected toggleAgenda(): void {
@@ -102,6 +126,7 @@ export class MeetingRoom implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.chatSubs.forEach(s => s.unsubscribe());
     this.signalingService.disconnect();
   }
 }

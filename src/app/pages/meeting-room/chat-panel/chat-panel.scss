@@ -1,3 +1,11 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
 .chat-panel {
   display: flex;
   flex-direction: column;
@@ -46,6 +54,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  min-height: 0;
 
   &::-webkit-scrollbar { width: 4px; }
   &::-webkit-scrollbar-track { background: transparent; }
@@ -87,11 +96,11 @@
 
 .bubble {
   padding: 0.5rem 0.75rem;
-  border-radius: 12px;
+  border-radius: 12px 12px 12px 4px;
   font-size: 0.83rem;
   line-height: 1.45;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: #3b4a5a;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   color: #e2e8f0;
   word-break: break-word;
 
@@ -101,19 +110,156 @@
     color: #f1f5f9;
     border-radius: 12px 12px 4px 12px;
   }
+}
 
-  &:not(&--own) {
-    border-radius: 12px 12px 12px 4px;
+.msg-time {
+  font-size: 0.62rem;
+  color: #475569;
+  margin-top: 0.15rem;
+  padding: 0 0.3rem;
+}
+
+// --- File event card (shared file in chat timeline) ---
+
+.file-event {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  align-self: center;
+  width: 100%;
+  max-width: 92%;
+}
+
+.file-card {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.55rem 0.875rem;
+  background: rgba(37, 99, 235, 0.08);
+  border: 1px solid rgba(37, 99, 235, 0.25);
+  border-radius: 10px;
+  text-decoration: none;
+  width: 100%;
+  box-sizing: border-box;
+  transition: background 0.15s, border-color 0.15s;
+
+  &:hover {
+    background: rgba(37, 99, 235, 0.15);
+    border-color: rgba(37, 99, 235, 0.45);
   }
+
+  &__icon { color: #60a5fa; flex-shrink: 0; }
+
+  &__name {
+    flex: 1;
+    font-size: 0.78rem;
+    color: #cbd5e1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+  }
+
+  &__dl { color: #60a5fa; flex-shrink: 0; opacity: 0.6; }
+}
+
+.file-event__time {
+  font-size: 0.6rem;
+  color: #475569;
+}
+
+// --- Pending file preview bar ---
+
+.pending-file {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 1rem;
+  background: rgba(37, 99, 235, 0.08);
+  border-top: 1px solid rgba(37, 99, 235, 0.2);
+  flex-shrink: 0;
+
+  svg { color: #60a5fa; flex-shrink: 0; }
+
+  &--error {
+    background: rgba(239, 68, 68, 0.08);
+    border-color: rgba(239, 68, 68, 0.2);
+  }
+
+  &__name {
+    flex: 1;
+    font-size: 0.75rem;
+    color: #94a3b8;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+  }
+
+  &__remove {
+    background: none;
+    border: none;
+    color: #475569;
+    cursor: pointer;
+    padding: 0.15rem;
+    display: flex;
+    border-radius: 4px;
+    flex-shrink: 0;
+    transition: color 0.15s;
+
+    &:hover { color: #ef4444; }
+  }
+}
+
+.upload-error {
+  font-size: 0.72rem;
+  color: #ef4444;
+  padding: 0.3rem 1rem;
+  flex-shrink: 0;
 }
 
 .input-area {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.4rem;
   padding: 0.75rem 1rem;
   border-top: 1px solid rgba(255, 255, 255, 0.07);
   flex-shrink: 0;
+}
+
+.attach-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  border-radius: 6px;
+  color: #64748b;
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+
+  &:hover:not(&--loading) {
+    color: #94a3b8;
+    background: rgba(255, 255, 255, 0.07);
+  }
+
+  &--loading {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+}
+
+.upload-spinner {
+  width: 13px;
+  height: 13px;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  border-top-color: #60a5fa;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
 }
 
 .message-input {
@@ -132,8 +278,8 @@
 }
 
 .send-btn {
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -147,4 +293,8 @@
 
   &:hover:not(:disabled) { background: #1d4ed8; }
   &:disabled { opacity: 0.4; cursor: not-allowed; }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }

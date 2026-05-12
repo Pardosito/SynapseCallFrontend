@@ -16,7 +16,7 @@ export class SignalingService implements OnDestroy {
   // Subjects — safe to subscribe before socket connects
   private userJoined$       = new Subject<string>();
   private userDisconnected$ = new Subject<string>();
-  private message$          = new Subject<{ userName: string; message: string }>();
+  private message$          = new Subject<{ userName: string; message: string; sentAt: string; socketId: string }>();
   private offer$            = new Subject<{ from: string; offer: RTCSessionDescriptionInit }>();
   private answer$           = new Subject<{ from: string; answer: RTCSessionDescriptionInit }>();
   private iceCandidate$     = new Subject<{ from: string; candidate: RTCIceCandidateInit }>();
@@ -76,7 +76,7 @@ export class SignalingService implements OnDestroy {
   sendMessage(message: string, userName: string): void {
     this.socket?.emit('message', { message, userName });
   }
-  onMessageReceived(): Observable<{ userName: string; message: string }> {
+  onMessageReceived(): Observable<{ userName: string; message: string; sentAt: string; socketId: string }> {
     return this.message$.asObservable();
   }
 

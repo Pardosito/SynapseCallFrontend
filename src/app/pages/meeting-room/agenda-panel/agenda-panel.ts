@@ -36,7 +36,8 @@ export class AgendaPanel implements OnInit, OnDestroy {
   agenda = signal<IAgenda | null>(null);
   items = signal<IAgendaItem[]>([]);
   activeItem = signal<IAgendaItem | null>(null);
-  isFinished = signal(false);
+  isFinished    = signal(false);
+  isTimerExpired = signal(false);
 
   timeRemaining = signal<number>(0);
   private timerInterval: ReturnType<typeof setInterval> | null = null;
@@ -68,10 +69,16 @@ export class AgendaPanel implements OnInit, OnDestroy {
   subscribeToSocketEvents(): void {
     this.subs.push(
       this.signalingService.onAgendaUpdate().subscribe(data => {
+        const prevActive = this.activeItem();
         this.activeItem.set(data.currentItem);
         this.isFinished.set(false);
+        this.isTimerExpired.set(false);
         this.items.update(list =>
-          list.map(i => this.itemId(i) === this.itemId(data.currentItem) ? data.currentItem : i)
+          list.map(i => {
+            if (this.itemId(i) === this.itemId(data.currentItem)) return data.currentItem;
+            if (prevActive && this.itemId(i) === this.itemId(prevActive)) return { ...i, status: 'completed' } as IAgendaItem;
+            return i;
+          })
         );
         this.startTimer(data.currentItem);
       }),
@@ -108,6 +115,7 @@ export class AgendaPanel implements OnInit, OnDestroy {
 
   startTimer(item: IAgendaItem): void {
     this.stopTimer();
+    this.isTimerExpired.set(false);
     const startMs = item.actualStartTime
       ? new Date(item.actualStartTime).getTime()
       : Date.now();
@@ -116,7 +124,11 @@ export class AgendaPanel implements OnInit, OnDestroy {
     const tick = () => {
       const remaining = Math.max(0, endMs - Date.now());
       this.timeRemaining.set(remaining);
-      if (remaining === 0) this.stopTimer();
+      if (remaining === 0) {
+        this.stopTimer();
+        this.isTimerExpired.set(true);
+        this.nextItem();
+      }
     };
 
     tick();
@@ -139,8 +151,7 @@ export class AgendaPanel implements OnInit, OnDestroy {
       durationInMinutes: this.newDuration,
       order,
     }).subscribe({
-      next: (item) => {
-        this.items.update(list => [...list, item]);
+      next: () => {
         this.newTopic = '';
         this.newDuration = 5;
         this.showAddForm.set(false);
@@ -160,18 +171,23 @@ export class AgendaPanel implements OnInit, OnDestroy {
   nextItem(): void {
     const active = this.activeItem();
     if (!active) return;
-    const sorted = [...this.items()].sort((a, b) => a.order - b.order);
-    const idx = sorted.findIndex(i => this.itemId(i) === this.itemId(active));
-    const next = sorted[idx + 1];
-    this.signalingService.emitAgendaNext(
-      this.itemId(active),
-      next ? this.itemId(next) : ''
-    );
+    const activeId = this.itemId(active);
+    if (!activeId) return;
+    const next = [...this.items()]
+      .sort((a, b) => a.order - b.order)
+      .find(i => i.status === 'pending');
+    this.signalingService.emitAgendaNext(activeId, next ? this.itemId(next) : '');
   }
 
   stopAgenda(): void {
     const active = this.activeItem();
     if (active) this.signalingService.emitAgendaStop(this.itemId(active));
+  }
+
+  startItem(item: IAgendaItem): void {
+    const id = this.itemId(item);
+    if (!id) return;
+    this.signalingService.emitAgendaStart(this.meetingId(), id);
   }
 
   deleteItem(item: IAgendaItem): void {

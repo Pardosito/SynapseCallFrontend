@@ -11,8 +11,9 @@ import { ChangeDetectionStrategy, Component, input, output } from '@angular/core
 export class MediaControls {
   isMuted = input<boolean>(false);
   isCameraOff = input<boolean>(false);
-  isChatOpen = input<boolean>(false);
+  isChatOpen   = input<boolean>(false);
   isAgendaOpen = input<boolean>(false);
+  unreadCount  = input<number>(0);
 
   toggleMuteEvent = output<void>();
   toggleCameraEvent = output<void>();

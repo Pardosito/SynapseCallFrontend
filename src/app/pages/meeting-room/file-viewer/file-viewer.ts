@@ -2,16 +2,11 @@ import {
   ChangeDetectionStrategy, Component, OnDestroy, OnInit,
   effect, inject, input, output, signal,
 } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Subscription } from 'rxjs';
 import { SignalingService } from '../../../services/signaling.service';
-import { environment } from '../../../../environments/environment.development';
+import { MeetingFilesService, FileEntry } from '../../../services/meeting-files.service';
 
-export interface FileEntry {
-  key: string;
-  url: string;
-  originalName?: string;
-}
+export type { FileEntry };
 
 @Component({
   selector: 'app-file-viewer',
@@ -27,7 +22,7 @@ export class FileViewer implements OnInit, OnDestroy {
   closePanel   = output<void>();
 
   private signalingService = inject(SignalingService);
-  private http             = inject(HttpClient);
+  private filesService     = inject(MeetingFilesService);
 
   files       = signal<FileEntry[]>([]);
   isUploading = signal(false);
@@ -55,34 +50,15 @@ export class FileViewer implements OnInit, OnDestroy {
     const file  = input.files?.[0];
     if (!file) return;
     input.value = '';
-    this.upload(file);
-  }
-
-  private upload(file: File): void {
-    const formData = new FormData();
-    formData.append('file', file);
     this.isUploading.set(true);
-    this.http
-      .post<any>(`${environment.apiUrl}/meetings/${this.meetingId()}/uploadFiles`, formData)
-      .subscribe({
-        next:  () => this.isUploading.set(false),
-        error: () => this.isUploading.set(false),
-      });
+    this.filesService.upload(this.meetingId(), file).subscribe({
+      next:  () => this.isUploading.set(false),
+      error: () => this.isUploading.set(false),
+    });
   }
 
-  displayName(entry: FileEntry): string {
-    if (entry.originalName) return entry.originalName;
-    const parts = entry.key.split('---');
-    return decodeURIComponent(parts[parts.length - 1]).replace(/_/g, ' ');
-  }
-
-  fileIcon(entry: FileEntry): 'image' | 'pdf' | 'archive' | 'doc' {
-    const ext = this.displayName(entry).split('.').pop()?.toLowerCase() ?? '';
-    if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext)) return 'image';
-    if (ext === 'pdf') return 'pdf';
-    if (['zip', 'rar'].includes(ext)) return 'archive';
-    return 'doc';
-  }
+  displayName = (entry: FileEntry) => this.filesService.displayName(entry);
+  fileIcon    = (entry: FileEntry) => this.filesService.fileIcon(entry);
 
   ngOnDestroy(): void {
     this.sub?.unsubscribe();

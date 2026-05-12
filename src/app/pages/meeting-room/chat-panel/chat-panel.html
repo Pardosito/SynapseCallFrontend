@@ -21,20 +21,70 @@
     }
 
     @for (msg of messages(); track $index) {
-      <div class="message-row" [class.message-row--own]="isOwn(msg)">
-        @if (!isOwn(msg)) {
-          <div class="sender-name">{{ msg.userName }}</div>
-        }
-        <div class="bubble" [class.bubble--own]="isOwn(msg)">
-          {{ msg.message }}
+      @if (msg.fileEntry) {
+        <!-- File card — centered system message style -->
+        <div class="file-event">
+          <a class="file-card" [href]="msg.fileEntry.url" target="_blank" rel="noopener noreferrer">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18" class="file-card__icon">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+            </svg>
+            <span class="file-card__name">{{ displayName(msg.fileEntry!) }}</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="13" height="13" class="file-card__dl">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+          </a>
+          <span class="file-event__time">{{ formatTime(msg.sentAt) }}</span>
         </div>
-      </div>
+      } @else {
+        <!-- Regular text message -->
+        <div class="message-row" [class.message-row--own]="isOwn(msg)">
+          @if (!isOwn(msg)) {
+            <div class="sender-name">{{ msg.userName }}</div>
+          }
+          <div class="bubble" [class.bubble--own]="isOwn(msg)">{{ msg.message }}</div>
+          <div class="msg-time">{{ formatTime(msg.sentAt) }}</div>
+        </div>
+      }
     }
 
     <div #messagesEnd></div>
   </div>
 
+  <!-- Pending file preview -->
+  @if (pendingFile()) {
+    <div class="pending-file" [class.pending-file--error]="uploadError()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+        <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66L9.41 17.41a2 2 0 0 1-2.83-2.83l8.49-8.48"/>
+      </svg>
+      <span class="pending-file__name">{{ pendingFile()!.name }}</span>
+      <button class="pending-file__remove" (click)="removePendingFile()" title="Quitar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="12" height="12">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+  }
+
+  @if (uploadError()) {
+    <div class="upload-error">Error al subir el archivo. Intenta de nuevo.</div>
+  }
+
   <div class="input-area">
+    <label class="attach-btn" [class.attach-btn--loading]="isUploading()" title="Adjuntar archivo">
+      @if (isUploading()) {
+        <span class="upload-spinner"></span>
+      } @else {
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+          <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66L9.41 17.41a2 2 0 0 1-2.83-2.83l8.49-8.48"/>
+        </svg>
+      }
+      <input type="file" hidden (change)="onFileSelected($event)" [disabled]="isUploading()" />
+    </label>
+
     <input
       class="message-input"
       type="text"
@@ -42,7 +92,8 @@
       (keyup.enter)="send()"
       placeholder="Escribe un mensaje..."
     />
-    <button class="send-btn" (click)="send()" [disabled]="!newMessage.trim()">
+
+    <button class="send-btn" (click)="send()" [disabled]="(!newMessage.trim() && !pendingFile()) || isUploading()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16">
         <line x1="22" y1="2" x2="11" y2="13"/>
         <polygon points="22 2 15 22 11 13 2 9 22 2"/>

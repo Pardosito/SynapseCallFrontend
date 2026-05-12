@@ -13,14 +13,24 @@
 
   <!-- Active item card with timer -->
   @if (activeItem()) {
-    <div class="active-card">
-      <div class="active-badge">
-        <span class="pulse-dot"></span>
-        En curso
+    <div class="active-card" [class.active-card--expired]="isTimerExpired()">
+      <button class="active-card-close" (click)="nextItem()" title="Finalizar tema">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+      <div class="active-badge" [class.active-badge--finished]="isTimerExpired()">
+        @if (!isTimerExpired()) {
+          <span class="pulse-dot"></span>
+          En curso
+        } @else {
+          Finalizado
+        }
       </div>
       <div class="active-topic">{{ activeItem()?.topic }}</div>
       <div class="timer" [class.timer--warning]="timerClass === 'timer--warning'" [class.timer--danger]="timerClass === 'timer--danger'">{{ formattedTime }}</div>
-      <div class="timer-label">restantes de {{ activeItem()?.durationInMinutes }} min</div>
+      <div class="timer-label">{{ isTimerExpired() ? 'tiempo agotado' : 'restantes de ' + activeItem()?.durationInMinutes + ' min' }}</div>
     </div>
   }
 
@@ -50,13 +60,20 @@
               <polyline points="20 6 9 17 4 12"/>
             </svg>
           } @else {
-            <button class="delete-item-btn" (click)="deleteItem(item)" title="Eliminar tema">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="13" height="13">
-                <polyline points="3 6 5 6 21 6"/>
-                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
-                <path d="M10 11v6M14 11v6"/>
-              </svg>
-            </button>
+            <div class="item-actions">
+              <button class="start-item-btn" (click)="startItem(item)" title="Iniciar ahora">
+                <svg viewBox="0 0 24 24" fill="currentColor" width="13" height="13">
+                  <polygon points="5 3 19 12 5 21 5 3"/>
+                </svg>
+              </button>
+              <button class="delete-item-btn" (click)="deleteItem(item)" title="Eliminar tema">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="13" height="13">
+                  <polyline points="3 6 5 6 21 6"/>
+                  <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                  <path d="M10 11v6M14 11v6"/>
+                </svg>
+              </button>
+            </div>
           }
         </div>
       </div>
