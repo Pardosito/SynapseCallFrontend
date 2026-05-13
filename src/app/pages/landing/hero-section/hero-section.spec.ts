@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { provideRouter } from '@angular/router';
 import { HeroSection } from './hero-section';
 
 describe('HeroSection', () => {
@@ -9,6 +9,7 @@ describe('HeroSection', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [HeroSection],
+      providers: [provideRouter([])]
     }).compileComponents();
 
     fixture = TestBed.createComponent(HeroSection);
