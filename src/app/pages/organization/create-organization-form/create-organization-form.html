@@ -1,1 +1,27 @@
-<p>create-organization-form works!</p>
+<section class="create-organization-form" aria-label="Datos de la organización">
+	<header class="create-organization-form__header">
+		<p class="create-organization-form__eyebrow">Paso 1</p>
+		<h2>Configura tu organización</h2>
+		<p>Escribe el nombre y, si quieres, sube un logo antes de pagar.</p>
+	</header>
+
+	<label>
+		<span>Nombre de la organización</span>
+		<input
+			type="text"
+			name="organizationName"
+			required
+			minlength="3"
+			[disabled]="disabled()"
+			[ngModel]="organizationName()"
+			(ngModelChange)="organizationName.set($event)"
+		/>
+	</label>
+
+	<label>
+		<span>Logo opcional</span>
+		<input type="file" accept="image/*" [disabled]="disabled()" (change)="onLogoChange($event)" />
+	</label>
+
+	<p class="create-organization-form__hint">El cargo de $5 USD se procesa con PayPal y luego se crea la organización.</p>
+</section>

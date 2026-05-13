@@ -19,6 +19,13 @@ export type AuthUser = {
   id?: string;
   name?: string;
   email: string;
+  organizationId?: string;
+  organization?: {
+    id: string;
+    name: string;
+    logoUrl?: string;
+    isOwner: boolean;
+  };
 };
 
 export type ApiMessageResponse = {
@@ -31,7 +38,5 @@ export type AuthState = {
 };
 
 export type GooglePayload = {
-  googleId: string,
-  email: string,
-  name: string
+  credential: string;
 }

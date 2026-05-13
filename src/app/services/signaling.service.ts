@@ -61,6 +61,38 @@ export class SignalingService implements OnDestroy {
     this.socket?.emit('join-meeting', roomId, userName);
   }
 
+  // --- AGENDA METHODS ---
+  emitAgendaStart(meetingId: string, firstItemId: string): void {
+    this.socket?.emit('agenda-start', { meetingId, firstItemId });
+  }
+
+  emitAgendaNext(currentItemId: string, nextItemId: string): void {
+    this.socket?.emit('agenda-next', { currentItemId, nextItemId });
+  }
+
+  emitAgendaStop(currentItemId: string): void {
+    this.socket?.emit('agenda-stop', { currentItemId });
+  }
+
+  onAgendaUpdate(): Observable<any> {
+    return new Observable((observer) => {
+      this.socket?.on('agenda-update', (data) => observer.next(data));
+    });
+  }
+
+  onAgendaFinished(): Observable<void> {
+    return new Observable((observer) => {
+      this.socket?.on('agenda-finished', () => observer.next());
+    });
+  }
+
+  onAgendaStopped(): Observable<void> {
+    return new Observable((observer) => {
+      this.socket?.on('agenda-stopped', () => observer.next());
+    });
+  }
+  // --- END AGENDA METHODS ---
+
   disconnect(): void {
     if (this.socket) {
       this.socket.disconnect();
