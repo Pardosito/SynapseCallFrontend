@@ -70,6 +70,15 @@
           />
         </aside>
       }
+
+      @if (isAgendaOpen()) {
+        <aside class="side-panel">
+          <app-agenda-panel 
+            [meetingId]="meetingId()!" 
+            [isHost]="isHost()" 
+          />
+        </aside>
+      }
     </main>
 
     <footer class="room-controls">
@@ -84,6 +93,7 @@
         (toggleChatEvent)="toggleChat()"
         (toggleAgendaEvent)="toggleAgenda()"
         (toggleFilesEvent)="toggleFileViewer()"
+        (toggleAgendaEvent)="toggleAgenda()"
         (leaveMeetingEvent)="leaveMeeting()"
       />
     </footer>

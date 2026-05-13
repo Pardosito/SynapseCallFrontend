@@ -1,0 +1,80 @@
+<div class="manage-org">
+  <header class="manage-org__header">
+    <div class="manage-org__info">
+      @if (orgData()?.logoUrl) {
+        <img [src]="orgData()?.logoUrl" alt="Logo de la organización" class="manage-org__logo">
+      } @else {
+        <div class="manage-org__logo-placeholder">
+          {{ orgData()?.name?.charAt(0) }}
+        </div>
+      }
+      <div class="manage-org__titles">
+        <h1>{{ orgData()?.name }}</h1>
+        <p class="manage-org__badge">Organización Activa</p>
+      </div>
+    </div>
+  </header>
+
+  <div class="manage-org__grid">
+    <section class="manage-org__card members-card">
+      <div class="card-header">
+        <span class="icon">👥</span>
+        <h2>Miembros del equipo</h2>
+      </div>
+      
+      <ul class="members-list">
+        @for (member of orgData()?.members; track $index) {
+          <li class="member-item">
+            <div class="member-avatar">{{ member.name?.charAt(0) || 'U' }}</div>
+            <div class="member-info">
+              <p class="member-name">{{ member.name || 'Usuario sin nombre' }}</p>
+              <p class="member-email">{{ member.email }}</p>
+            </div>
+            @if (member.id === orgData()?.ownerId) {
+              <span class="owner-tag">Propietario</span>
+            }
+          </li>
+        }
+      </ul>
+
+      @if (isOwner()) {
+        <div class="invite-section">
+          <h3>Invitar nuevo miembro</h3>
+          <div class="invite-form">
+            <input 
+              type="email" 
+              placeholder="correo@ejemplo.com" 
+              [(ngModel)]="inviteEmail"
+              [disabled]="isInviting()"
+            >
+            <button 
+              (click)="onInviteMember()" 
+              [disabled]="isInviting() || !inviteEmail()"
+              class="btn-invite"
+            >
+              {{ isInviting() ? 'Invitando...' : 'Invitar' }}
+            </button>
+          </div>
+          @if (message()) {
+            <p class="status-message">{{ message() }}</p>
+          }
+        </div>
+      }
+    </section>
+
+    <section class="manage-org__card settings-card">
+      <div class="card-header">
+        <span class="icon">⚙️</span>
+        <h2>Configuración</h2>
+      </div>
+      <p>Administra los detalles de tu organización y las preferencias de facturación.</p>
+      <div class="settings-actions">
+        <button class="btn-secondary">Editar Perfil</button>
+        <button class="btn-secondary">Facturación</button>
+        @if (isOwner()) {
+          <button class="btn-danger">Eliminar Organización</button>
+        }
+      </div>
+    </section>
+  </div>
+</div>

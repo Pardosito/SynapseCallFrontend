@@ -1,0 +1,48 @@
+.pricing-tiers {
+	display: grid;
+	gap: 1rem;
+	grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+.pricing-tiers__card {
+	background: #fff;
+	border: 1px solid #dbeafe;
+	border-radius: 1rem;
+	padding: 1rem;
+	box-shadow: 0 14px 28px rgba(15, 23, 42, 0.06);
+}
+
+.pricing-tiers__card--featured {
+	background: linear-gradient(180deg, #eff6ff 0%, #fff 100%);
+	border-color: #93c5fd;
+}
+
+.pricing-tiers__eyebrow {
+	margin: 0 0 0.35rem;
+	color: #1d4ed8;
+	font-size: 0.82rem;
+	font-weight: 800;
+	text-transform: uppercase;
+	letter-spacing: 0.08em;
+}
+
+.pricing-tiers h2,
+.pricing-tiers h3 {
+	margin: 0;
+	color: #0f172a;
+}
+
+.pricing-tiers__copy {
+	color: #475569;
+	margin: 0.5rem 0 0;
+}
+
+.pricing-tiers ul {
+	margin: 0.85rem 0 0;
+	padding-left: 1.1rem;
+	color: #334155;
+}
+
+.pricing-tiers li + li {
+	margin-top: 0.35rem;
+}
