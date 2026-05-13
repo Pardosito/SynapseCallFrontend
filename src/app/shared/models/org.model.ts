@@ -1,10 +1,11 @@
 export interface IOrganization {
     id?: string;
+    _id?: string;
     name: string;
     domain?: string;
     ownerId: string;
     logoUrl?: string;
-    members: string[];
+    members: any[]; // Can be string[] or populated User objects
     subscription: {
         status: "active" | "inactive" | "past_due";
         plan: "organization_tier" | "free";
@@ -14,7 +15,8 @@ export interface IOrganization {
 }
 
 export interface OrgResponse {
-  message: string
+  message?: string;
+  organization: IOrganization;
 }
 
 export interface IncludeOrgResponse {

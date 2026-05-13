@@ -60,7 +60,8 @@ export class ManageOrganization {
       },
       error: (err) => {
         this.isInviting.set(false);
-        this.message.set('Error al invitar al miembro.');
+        const errorMsg = err.error?.message || 'Error al invitar al miembro.';
+        this.message.set(errorMsg);
       }
     });
   }
