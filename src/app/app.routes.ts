@@ -4,11 +4,13 @@ import { Login } from './pages/login/login';
 import { Register } from './pages/register/register';
 import { MeetingRoom } from './pages/meeting-room/meeting-room';
 import { Dashboard } from './pages/dashboard/dashboard';
+import { Organization } from './pages/organization/organization';
 
 export const routes: Routes = [
 	{ path: '', component: Landing },
 	{ path: 'login', component: Login },
 	{ path: 'register', component: Register },
+	{ path: 'organization', component: Organization },
 	{ path: "dashboard", component: Dashboard },
 	{ path: "room/:id", component: MeetingRoom }
 ];

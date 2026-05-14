@@ -3,11 +3,13 @@ import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { finalize } from 'rxjs/operators';
 import { OrganizationsService } from '../../services/organizations.service';
+import { DashboardHeader } from '../../layouts/dashboard-header/dashboard-header';
+import { DashboardFooter } from '../../layouts/dashboard-footer/dashboard-footer';
 import { PaypalCheckout } from './paypal-checkout/paypal-checkout';
 
 @Component({
   selector: 'app-organization',
-  imports: [PaypalCheckout],
+  imports: [DashboardHeader, DashboardFooter, PaypalCheckout],
   templateUrl: './organization.html',
   styleUrl: './organization.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

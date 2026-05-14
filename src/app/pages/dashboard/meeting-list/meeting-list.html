@@ -3,6 +3,45 @@
     <h2>Tus reuniones</h2>
   </div>
 
+  <!-- Filter bar -->
+  <div class="filter-bar">
+    <div class="filter-group">
+      <span class="filter-group__label">Fecha</span>
+      <div class="filter-chips">
+        <button class="chip" [class.chip--active]="dateFilter() === 'all'" (click)="dateFilter.set('all')">Todas</button>
+        <button class="chip" [class.chip--active]="dateFilter() === 'today'" (click)="dateFilter.set('today')">Hoy</button>
+        <button class="chip" [class.chip--active]="dateFilter() === 'week'" (click)="dateFilter.set('week')">Esta semana</button>
+        <button class="chip" [class.chip--active]="dateFilter() === 'month'" (click)="dateFilter.set('month')">Este mes</button>
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <span class="filter-group__label">Tipo</span>
+      <div class="filter-chips">
+        <button class="chip" [class.chip--active]="visibilityFilter() === 'all'" (click)="visibilityFilter.set('all')">Todas</button>
+        <button class="chip" [class.chip--active]="visibilityFilter() === 'public'" (click)="visibilityFilter.set('public')">Públicas</button>
+        <button class="chip" [class.chip--active]="visibilityFilter() === 'org-only'" (click)="visibilityFilter.set('org-only')">Solo org</button>
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <span class="filter-group__label">Estado</span>
+      <div class="filter-chips">
+        <button class="chip" [class.chip--active]="statusFilter() === 'all'" (click)="statusFilter.set('all')">Todos</button>
+        <button class="chip" [class.chip--active]="statusFilter() === 'scheduled'" (click)="statusFilter.set('scheduled')">Programadas</button>
+        <button class="chip" [class.chip--active]="statusFilter() === 'ongoing'" (click)="statusFilter.set('ongoing')">En curso</button>
+        <button class="chip" [class.chip--active]="statusFilter() === 'ended'" (click)="statusFilter.set('ended')">Finalizadas</button>
+      </div>
+    </div>
+
+    @if (hasActiveFilters()) {
+      <button class="filter-clear" (click)="clearFilters()">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        Limpiar filtros
+      </button>
+    }
+  </div>
+
   @if (isLoading()) {
     <div class="meeting-list__state">
       <div class="spinner"></div>
@@ -18,7 +57,7 @@
   }
 
   @if (!isLoading() && !errorMessage()) {
-    @if (meetings().length === 0) {
+    @if (filteredMeetings().length === 0) {
       <div class="meeting-list__empty">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="40" height="40">
           <rect x="3" y="4" width="18" height="18" rx="2"/>
@@ -26,14 +65,25 @@
           <line x1="8" y1="2" x2="8" y2="6"/>
           <line x1="3" y1="10" x2="21" y2="10"/>
         </svg>
-        <p>No tienes reuniones programadas.</p>
-        <span>Crea una nueva reunión para comenzar.</span>
+        @if (hasActiveFilters()) {
+          <p>Sin resultados para los filtros aplicados.</p>
+          <span>Prueba cambiando los filtros o <button class="link-btn" (click)="clearFilters()">limpia todos</button>.</span>
+        } @else {
+          <p>No tienes reuniones programadas.</p>
+          <span>Crea una nueva reunión para comenzar.</span>
+        }
       </div>
     } @else {
       <div class="meetings-grid">
-        @for (meeting of meetings(); track meeting._id) {
+        @for (meeting of filteredMeetings(); track meeting._id) {
           <div class="meeting-card">
             <div class="meeting-card__top">
+              @if (meeting.isOrgOnly) {
+                <span class="meeting-card__badge meeting-card__badge--org">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                  Solo org
+                </span>
+              }
               <span class="meeting-card__status meeting-card__status--{{ meeting.status }}">
                 {{ statusLabel(meeting.status) }}
               </span>

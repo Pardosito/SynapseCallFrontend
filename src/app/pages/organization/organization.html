@@ -1,57 +1,63 @@
-<main class="org-page" aria-label="Crear organización">
-  <header class="org-page__header">
-    <h1>Crear organización</h1>
-    <p>Configura tu espacio de trabajo y activa tu plan.</p>
-  </header>
+<div class="org-layout">
+  <app-dashboard-header />
 
-  <div class="org-page__steps">
+  <main class="org-content" aria-label="Crear organización">
+    <header class="org-page__header">
+      <h1>Crear organización</h1>
+      <p>Configura tu espacio de trabajo y activa tu plan.</p>
+    </header>
 
-    <section class="org-step" aria-label="Paso 1: Datos de la organización">
-      <p class="org-step__eyebrow">Paso 1</p>
-      <h2>Datos de la organización</h2>
+    <div class="org-page__steps">
 
-      <div class="org-step__field">
-        <label for="orgName">Nombre de la organización</label>
-        <input
-          id="orgName"
-          type="text"
-          placeholder="Ej. Acme Corp"
-          [value]="organizationName()"
-          (input)="organizationName.set($any($event.target).value)"
+      <section class="org-step" aria-label="Paso 1: Datos de la organización">
+        <p class="org-step__eyebrow">Paso 1</p>
+        <h2>Datos de la organización</h2>
+
+        <div class="org-step__field">
+          <label for="orgName">Nombre de la organización</label>
+          <input
+            id="orgName"
+            type="text"
+            placeholder="Ej. Acme Corp"
+            [value]="organizationName()"
+            (input)="organizationName.set($any($event.target).value)"
+          />
+          <span class="org-step__hint">Mínimo 3 caracteres para activar el pago.</span>
+        </div>
+
+        <div class="org-step__field">
+          <label for="orgLogo">Logo (opcional)</label>
+          <input
+            id="orgLogo"
+            type="file"
+            accept="image/*"
+            (change)="onLogoSelected($any($event.target).files?.[0] ?? null)"
+          />
+        </div>
+      </section>
+
+      @if (canShowCheckout()) {
+        <app-paypal-checkout
+          [organizationName]="organizationName()"
+          (orderApproved)="onOrderApproved($event)"
+          (paymentError)="onCheckoutError($event)"
         />
-        <span class="org-step__hint">Mínimo 3 caracteres para activar el pago.</span>
-      </div>
+      }
 
-      <div class="org-step__field">
-        <label for="orgLogo">Logo (opcional)</label>
-        <input
-          id="orgLogo"
-          type="file"
-          accept="image/*"
-          (change)="onLogoSelected($any($event.target).files?.[0] ?? null)"
-        />
-      </div>
-    </section>
+      @if (errorMessage()) {
+        <p class="org-page__feedback org-page__feedback--error">{{ errorMessage() }}</p>
+      }
 
-    @if (canShowCheckout()) {
-      <app-paypal-checkout
-        [organizationName]="organizationName()"
-        (orderApproved)="onOrderApproved($event)"
-        (paymentError)="onCheckoutError($event)"
-      />
-    }
+      @if (successMessage()) {
+        <p class="org-page__feedback org-page__feedback--ok">{{ successMessage() }}</p>
+      }
 
-    @if (errorMessage()) {
-      <p class="org-page__feedback org-page__feedback--error">{{ errorMessage() }}</p>
-    }
+      @if (isSubmitting()) {
+        <p class="org-page__feedback">Creando organización...</p>
+      }
 
-    @if (successMessage()) {
-      <p class="org-page__feedback org-page__feedback--ok">{{ successMessage() }}</p>
-    }
+    </div>
+  </main>
 
-    @if (isSubmitting()) {
-      <p class="org-page__feedback">Creando organización...</p>
-    }
-
-  </div>
-</main>
+  <app-dashboard-footer />
+</div>

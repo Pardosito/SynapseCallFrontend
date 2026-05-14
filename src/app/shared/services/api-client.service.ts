@@ -9,10 +9,10 @@ export class ApiClientService {
   public constructor(private readonly http: HttpClient) {}
 
   public get<T>(path: string) {
-    return this.http.get<T>(`${this.apiBaseUrl}${path}`);
+    return this.http.get<T>(`${this.apiBaseUrl}${path}`, { withCredentials: true });
   }
 
   public post<T>(path: string, body: unknown) {
-    return this.http.post<T>(`${this.apiBaseUrl}${path}`, body);
+    return this.http.post<T>(`${this.apiBaseUrl}${path}`, body, { withCredentials: true });
   }
 }
