@@ -1,0 +1,15 @@
+<div class="meeting-share">
+
+  @if (copyStatus()) {
+    <span class="copy-status" role="status" aria-live="polite">{{ copyStatus() }}</span>
+  }
+
+  <button type="button" class="share-btn" (click)="copyMeetingId()" aria-label="Copiar ID de la reunión" title="Copiar ID de la reunión">
+    Copiar ID
+  </button>
+
+  <div class="share-menu-wrapper">
+    <button ype="button" class="share-btn share-btn--primary" (click)="shareMeeting()" aria-label="Compartir reunión" title="Compartir reunión">
+      Compartir
+    </button>
+</div>
