@@ -13,6 +13,91 @@
   }
 }
 
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 1.5rem;
+  padding: 1rem 1.25rem;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  align-items: center;
+}
+
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.filter-group__label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #94a3b8;
+  white-space: nowrap;
+}
+
+.filter-chips {
+  display: flex;
+  gap: 0.3rem;
+  flex-wrap: wrap;
+}
+
+.chip {
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  border: 1.5px solid #e2e8f0;
+  background: transparent;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #64748b;
+  cursor: pointer;
+  font-family: inherit;
+  transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease;
+
+  &:hover {
+    border-color: #94a3b8;
+    color: #0f172a;
+  }
+
+  &--active {
+    background: #0f172a;
+    border-color: #0f172a;
+    color: #f8fafc;
+
+    &:hover {
+      background: #1e293b;
+      border-color: #1e293b;
+      color: #f8fafc;
+    }
+  }
+}
+
+.filter-clear {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-left: auto;
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  border: 1.5px solid #fecaca;
+  background: transparent;
+  color: #dc2626;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  white-space: nowrap;
+  transition: background 0.12s ease;
+
+  &:hover {
+    background: #fee2e2;
+  }
+}
+
 .meeting-list__state {
   display: flex;
   flex-direction: column;
@@ -67,7 +152,35 @@
 
 .meeting-card__top {
   display: flex;
+  align-items: center;
   justify-content: flex-end;
+  gap: 0.4rem;
+}
+
+.meeting-card__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 600;
+
+  &--org {
+    background: #ede9fe;
+    color: #6d28d9;
+  }
+}
+
+.link-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  color: #2563eb;
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: inherit;
 }
 
 .meeting-card__status {

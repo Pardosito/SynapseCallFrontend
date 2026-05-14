@@ -6,6 +6,7 @@ export interface IOrganization {
     ownerId: string;
     logoUrl?: string;
     members: any[]; // Can be string[] or populated User objects
+    isOwner?: boolean;
     subscription: {
         status: "active" | "inactive" | "past_due";
         plan: "organization_tier" | "free";
