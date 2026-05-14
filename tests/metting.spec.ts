@@ -24,7 +24,7 @@ async function login(page: Page): Promise<void> {
 }
 
 test.describe('Flujo de reunión en deploy', () => {
-  test('debe crear una reunión, entrar y controlar cámara/micrófono', async ({ page }) => {
+  test('debe crear una reunión, entrar, mandar mensaje y controlar cámara/micrófono', async ({ page }) => {
     test.setTimeout(120_000);
 
     await login(page);
@@ -57,6 +57,20 @@ test.describe('Flujo de reunión en deploy', () => {
     });
 
     await expect(page.getByText(/en vivo/i)).toBeVisible({
+      timeout: 30_000,
+    });
+
+    // Prueba chat
+    await page.getByTitle(/chat/i).click();
+
+    await expect(page.getByRole('heading', { name: /chat/i })).toBeVisible({
+      timeout: 10_000,
+    });
+
+    await page.getByPlaceholder(/escribe un mensaje/i).fill('hola gente');
+    await page.keyboard.press('Enter');
+
+    await expect(page.getByText('hola gente')).toBeVisible({
       timeout: 30_000,
     });
 
