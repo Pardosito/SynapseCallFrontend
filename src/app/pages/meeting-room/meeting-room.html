@@ -27,6 +27,10 @@
         <h2>{{ meetingData()?.title || 'Reunión sin título' }}</h2>
       </div>
       <div class="room-header__meta">
+        <app-meeting-share
+          [meetingId]="meetingId()!"
+          [meetingTitle]="meetingData()?.title || 'Reunión sin título'"
+        />
         <span class="live-badge">EN VIVO</span>
       </div>
     </header>

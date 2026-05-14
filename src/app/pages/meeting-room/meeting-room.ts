@@ -14,11 +14,12 @@ import { FileViewer } from './file-viewer/file-viewer';
 import { AgendaPanel } from './agenda-panel/agenda-panel';
 import { SignalingService } from '../../services/signaling.service';
 import { AuthFlowService } from '../../shared/services/auth-flow.service';
+import { MeetingShare } from './meeting-share/meeting-share';
 
 @Component({
   selector: 'app-meeting-room',
   standalone: true,
-  imports: [VideoGrid, MediaControls, ChatPanel, FileViewer, AgendaPanel],
+  imports: [VideoGrid, MediaControls, ChatPanel, FileViewer, AgendaPanel, MeetingShare],
   templateUrl: './meeting-room.html',
   styleUrl: './meeting-room.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

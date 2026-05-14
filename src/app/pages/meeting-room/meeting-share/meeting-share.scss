@@ -1,0 +1,87 @@
+.meeting-share {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  position: relative;
+}
+
+.share-btn {
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  background: rgba(30, 41, 59, 0.85);
+  color: #e2e8f0;
+  border-radius: 999px;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.1s ease;
+
+  &:hover {
+    background: #334155;
+    border-color: rgba(148, 163, 184, 0.45);
+  }
+
+  &:active {
+    transform: scale(0.96);
+  }
+
+  &--primary {
+    background: #2563eb;
+    border-color: #2563eb;
+    color: #fff;
+
+    &:hover {
+      background: #1d4ed8;
+      border-color: #1d4ed8;
+    }
+  }
+}
+
+.copy-status {
+  color: #22c55e;
+  font-size: 0.72rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.share-menu-wrapper {
+  position: relative;
+}
+
+.share-menu {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  min-width: 170px;
+  background: #1e293b;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 12px;
+  padding: 0.35rem;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.28);
+  z-index: 20;
+
+  button {
+    width: 100%;
+    border: none;
+    background: transparent;
+    color: #e2e8f0;
+    text-align: left;
+    border-radius: 8px;
+    padding: 0.55rem 0.7rem;
+    font-size: 0.78rem;
+    cursor: pointer;
+
+    &:hover {
+      background: #334155;
+    }
+  }
+}
+
+@media (max-width: 760px) {
+  .meeting-share {
+    flex-wrap: wrap;
+  }
+}
