@@ -30,6 +30,10 @@ export class OrganizationsService {
     return this.http.post<OrgResponse>(`${this.baseUrl}/${orgId}/members`, payload, { withCredentials: true });
   }
 
+  getMyOrg(): Observable<IOrganization | null> {
+    return this.http.get<IOrganization>(`${this.baseUrl}/mine`, { withCredentials: true });
+  }
+
   getOrgById(id: string): Observable<OrgResponse> {
     return this.http.get<OrgResponse>(`${this.baseUrl}/${id}`, { withCredentials: true });
   }
@@ -40,5 +44,13 @@ export class OrganizationsService {
 
   deleteOrgById(orgId: string): Observable<OrgResponse> {
     return this.http.delete<OrgResponse>(`${this.baseUrl}/${orgId}`, { withCredentials: true });
+  }
+
+  joinOrg(orgId: string): Observable<IncludeOrgResponse> {
+    return this.http.post<IncludeOrgResponse>(`${this.baseUrl}/${orgId}/join`, {}, { withCredentials: true });
+  }
+
+  leaveOrg(orgId: string): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(`${this.baseUrl}/${orgId}/leave`, {}, { withCredentials: true });
   }
 }

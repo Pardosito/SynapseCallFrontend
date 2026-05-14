@@ -17,9 +17,11 @@ export class CreateMeetingModal {
   readonly close = output<void>();
   readonly meetingSaved = output<void>();
   readonly meetingToEdit = input<IMeeting | null>(null);
+  readonly hasOrg = input(false);
 
   title = '';
   scheduledAt = '';
+  isOrgOnly = false;
 
   isLoading = signal(false);
   errorMessage = signal<string | null>(null);
@@ -27,12 +29,11 @@ export class CreateMeetingModal {
   constructor() {
     effect(() => {
       const meeting = this.meetingToEdit();
-
       this.title = meeting?.title ?? '';
       this.scheduledAt = meeting?.startTime
         ? this.toDatetimeLocalValue(meeting.startTime)
         : '';
-
+      this.isOrgOnly = meeting?.isOrgOnly ?? false;
       this.errorMessage.set(null);
     });
   }
@@ -49,7 +50,6 @@ export class CreateMeetingModal {
     if (this.isLoading()) {
       return this.isEditMode ? 'Guardando...' : 'Creando...';
     }
-
     return this.isEditMode ? 'Guardar cambios' : 'Crear reunión';
   }
 
@@ -60,13 +60,9 @@ export class CreateMeetingModal {
     }
 
     const meeting = this.meetingToEdit();
+    const startTime = new Date(this.scheduledAt);
 
-    const payload = {
-      title: this.title.trim(),
-      startTime: new Date(this.scheduledAt)
-    };
-
-    if (Number.isNaN(payload.startTime.getTime())) {
+    if (Number.isNaN(startTime.getTime())) {
       this.errorMessage.set('La fecha no tiene un formato válido.');
       return;
     }
@@ -75,6 +71,12 @@ export class CreateMeetingModal {
       this.errorMessage.set('No se encontró el identificador de la reunión.');
       return;
     }
+
+    const payload = {
+      title: this.title.trim(),
+      startTime,
+      isOrgOnly: this.hasOrg() ? this.isOrgOnly : false,
+    };
 
     this.isLoading.set(true);
     this.errorMessage.set(null);
@@ -91,14 +93,13 @@ export class CreateMeetingModal {
       error: (err) => {
         this.isLoading.set(false);
         this.errorMessage.set(err.error?.message || 'No se pudo guardar la reunión.');
-      }
+      },
     });
   }
 
   private toDatetimeLocalValue(value: Date | string): string {
     const date = new Date(value);
     if (Number.isNaN(date.getTime())) return '';
-
     const timezoneOffset = date.getTimezoneOffset() * 60000;
     return new Date(date.getTime() - timezoneOffset).toISOString().slice(0, 16);
   }

@@ -35,6 +35,20 @@
         [disabled]="isLoading()"
       />
     </div>
+
+    @if (hasOrg()) {
+      <label class="org-only-toggle">
+        <input
+          type="checkbox"
+          [(ngModel)]="isOrgOnly"
+          [disabled]="isLoading()"
+        />
+        <span class="org-only-toggle__track"></span>
+        <span class="org-only-toggle__label">
+          Solo para miembros de la organización
+        </span>
+      </label>
+    }
   </div>
 
   <div class="modal__footer">

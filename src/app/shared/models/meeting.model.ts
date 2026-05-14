@@ -7,6 +7,7 @@ export interface IMeeting {
     endTime?: Date;
     initiator_id: string;
     isProMeeting: boolean;
+    isOrgOnly?: boolean;
     meetingSettings: {
         muteOnEntry: boolean;
         allowRenaming: boolean;
