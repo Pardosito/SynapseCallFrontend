@@ -9,7 +9,7 @@ import { IAgendaItem } from '../shared/models/agenda-item.model';
 export class SignalingService implements OnDestroy {
   private socket: Socket | null = null;
   private authFlow = inject(AuthFlowService);
-  private socketUrl = new URL(environment.apiUrl).origin;
+  private socketUrl = environment.apiUrl;
 
   public isConnected = signal(false);
 
