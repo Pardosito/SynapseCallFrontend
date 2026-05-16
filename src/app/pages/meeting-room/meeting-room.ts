@@ -86,7 +86,6 @@ export class MeetingRoom implements OnInit, OnDestroy {
         this.isLoading.set(false);
 
         this.signalingService.connect();
-        this.signalingService.joinRoom(id, this.userName());
         this.subscribeToChat();
       },
       error: (err) => {

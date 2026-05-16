@@ -37,7 +37,7 @@
 
     <main class="room-main-layout">
       <div class="video-area">
-        <app-video-grid [isMuted]="isMuted()" [isCameraOff]="isCameraOff()" />
+        <app-video-grid [isMuted]="isMuted()" [isCameraOff]="isCameraOff()" [meetingId]="meetingId()" [userName]="userName()" />
       </div>
 
       @if (isChatOpen()) {

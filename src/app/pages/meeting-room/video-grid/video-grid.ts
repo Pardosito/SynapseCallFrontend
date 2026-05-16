@@ -1,5 +1,5 @@
 import {
-  ChangeDetectionStrategy, Component, ElementRef,
+  ChangeDetectionStrategy, Component, ElementRef, NgZone,
   OnDestroy, OnInit, ViewChild, effect, inject, input, signal,
 } from '@angular/core';
 import { Subscription } from 'rxjs';
@@ -27,11 +27,15 @@ export class VideoGrid implements OnInit, OnDestroy {
   @ViewChild('myVideoElement', { static: true }) myVideo!: ElementRef<HTMLVideoElement>;
 
   private signalingService = inject(SignalingService);
+  private ngZone = inject(NgZone);
   private peers = new Map<string, RTCPeerConnection>();
+  private pendingCandidates = new Map<string, RTCIceCandidateInit[]>();
   private subs: Subscription[] = [];
 
   readonly isMuted     = input<boolean>(false);
   readonly isCameraOff = input<boolean>(false);
+  readonly meetingId   = input<string | null>(null);
+  readonly userName    = input<string>('');
 
   myStream     = signal<MediaStream | null>(null);
   remoteVideos = signal<RemoteVideo[]>([]);
@@ -49,7 +53,10 @@ export class VideoGrid implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.startMyVideo();
+    // Subscribe to signaling events BEFORE joining the room so no events are missed
     this.setupSignaling();
+    const id = this.meetingId();
+    if (id) this.signalingService.joinRoom(id, this.userName());
   }
 
   async startMyVideo(): Promise<void> {
@@ -74,6 +81,12 @@ export class VideoGrid implements OnInit, OnDestroy {
     });
   }
 
+  private flushPendingCandidates(socketId: string, pc: RTCPeerConnection): void {
+    const queued = this.pendingCandidates.get(socketId) ?? [];
+    queued.forEach(c => pc.addIceCandidate(new RTCIceCandidate(c)));
+    this.pendingCandidates.delete(socketId);
+  }
+
   private setupSignaling(): void {
     this.subs.push(
       this.signalingService.onUserJoined().subscribe(socketId => {
@@ -86,14 +99,24 @@ export class VideoGrid implements OnInit, OnDestroy {
         this.handleOffer(from, offer);
       }),
 
-      this.signalingService.onAnswer().subscribe(({ from, answer }) => {
+      this.signalingService.onAnswer().subscribe(async ({ from, answer }) => {
         console.log('[VideoGrid] answer received from:', from);
-        this.peers.get(from)?.setRemoteDescription(new RTCSessionDescription(answer));
+        const pc = this.peers.get(from);
+        if (!pc) return;
+        await pc.setRemoteDescription(new RTCSessionDescription(answer));
+        this.flushPendingCandidates(from, pc);
       }),
 
       this.signalingService.onIceCandidate().subscribe(({ from, candidate }) => {
         console.log('[VideoGrid] ICE candidate from:', from);
-        this.peers.get(from)?.addIceCandidate(new RTCIceCandidate(candidate));
+        const pc = this.peers.get(from);
+        if (!pc || !pc.remoteDescription) {
+          const queue = this.pendingCandidates.get(from) ?? [];
+          queue.push(candidate);
+          this.pendingCandidates.set(from, queue);
+        } else {
+          pc.addIceCandidate(new RTCIceCandidate(candidate));
+        }
       }),
 
       this.signalingService.onUserDisconnected().subscribe(socketId => {
@@ -106,7 +129,6 @@ export class VideoGrid implements OnInit, OnDestroy {
   private async createPeer(socketId: string): Promise<RTCPeerConnection> {
     const pc = new RTCPeerConnection(ICE_CONFIG);
 
-    // Wait for local stream so tracks are always added
     const stream = await this.getLocalStream();
     stream.getTracks().forEach(track => {
       pc.addTrack(track, stream);
@@ -125,12 +147,14 @@ export class VideoGrid implements OnInit, OnDestroy {
     };
 
     pc.ontrack = ({ streams }) => {
-      const stream = streams[0];
-      console.log('[VideoGrid] ontrack fired from:', socketId, 'stream:', stream?.id);
-      if (!stream) return;
-      this.remoteVideos.update(list => {
-        if (list.find(v => v.socketId === socketId)) return list;
-        return [...list, { socketId, stream }];
+      const remoteStream = streams[0];
+      console.log('[VideoGrid] ontrack fired from:', socketId, 'stream:', remoteStream?.id);
+      if (!remoteStream) return;
+      this.ngZone.run(() => {
+        this.remoteVideos.update(list => {
+          if (list.find(v => v.socketId === socketId)) return list;
+          return [...list, { socketId, stream: remoteStream }];
+        });
       });
     };
 
@@ -149,6 +173,7 @@ export class VideoGrid implements OnInit, OnDestroy {
   private async handleOffer(from: string, offer: RTCSessionDescriptionInit): Promise<void> {
     const pc = await this.createPeer(from);
     await pc.setRemoteDescription(new RTCSessionDescription(offer));
+    this.flushPendingCandidates(from, pc);
     const answer = await pc.createAnswer();
     await pc.setLocalDescription(answer);
     console.log('[VideoGrid] Sending answer to:', from);
@@ -158,6 +183,7 @@ export class VideoGrid implements OnInit, OnDestroy {
   private closePeer(socketId: string): void {
     this.peers.get(socketId)?.close();
     this.peers.delete(socketId);
+    this.pendingCandidates.delete(socketId);
     this.remoteVideos.update(list => list.filter(v => v.socketId !== socketId));
   }
 
